@@ -571,7 +571,7 @@ class RandomMotionHandler(Handler):
 
 
 """Possible properties by which cells are colored."""
-Colorizer = Enum("Colorizer", ["PRESSURE", "VOLUME", "RANDOM", "GENE", "MOLECULE", "LINEAGE", "LINEAGE_DISTANCE"])
+Colorizer = Enum("Colorizer", ["PRESSURE", "VOLUME", "RANDOM", "GENE", "MOLECULE", "LINEAGE_DISTANCE"])
 
 """Color map for the random cell colorizer."""
 COLORS = [
@@ -614,7 +614,7 @@ class ColorizeHandler(Handler):
 
     def __init__(
         self,
-        colorizer: Colorizer = Colorizer.PRESSURE,
+        colorizer: Colorizer = Colorizer.LINEAGE_DISTANCE,
         metabolite: Gene | Molecule | str = None,
         range: tuple | None = None,
     ):
@@ -732,8 +732,6 @@ class ColorizeHandler(Handler):
                     rgb_color = self._hsv_to_rgb(hsv_color)
                     cell.recolor(rgb_color)
                 return  # Skip the rest of the function since we've already colored the cells
-            elif self.colorizer == Colorizer.LINEAGE:
-                pass
             else:
                 print(f"Error: Invalid colorizer type: {self.colorizer}")
                 raise ValueError("Colorizer must be: PRESSURE, VOLUME, GENE, MOLECULE, LINEAGE_DISTANCE, or RANDOM.")
