@@ -32,9 +32,11 @@ class Handler(ABC):
         """Set up the handler.
 
         Args:
-            get_cells: A function that, when called,
+            get_cells (Callable[[], list[Cell]]): A function that, when called,
                 retrieves the list of cells that may divide.
-            dt: The time step for the simulation.
+            get_diffsystem (Callable[[], DiffusionSystem]): A function that, when called,
+                retrieves the diffusion system.
+            dt (float): The time step for the simulation.
         """
         self.get_cells = get_cells
         self.get_diffsystem = get_diffsystem
@@ -48,8 +50,8 @@ class Handler(ABC):
         upon specified events (e.g. post-frame change).
 
         Args:
-            scene: The Blender scene.
-            depsgraph: The dependency graph.
+            scene (bpy.types.Scene): The Blender scene.
+            depsgraph (bpy.types.Depsgraph): The dependency graph.
         """
         raise NotImplementedError("Subclasses must implement run() method.")
 
@@ -98,7 +100,7 @@ class ConcentrationVisualizationHandler(Handler):
         if existing:
             bpy.data.objects.remove(existing, do_unlink=True)
 
-    def _create_pointcloud(self, grid_conc):
+    def _create_pointcloud(self, grid_conc) -> bpy.types.Mesh:
         grid_conc = grid_conc[::2, ::2, ::2]
         nx, ny, nz = grid_conc.shape
         diff_system = self.get_diffsystem()
@@ -182,7 +184,7 @@ class ConcentrationVisualizationHandler(Handler):
         output_node.location = (800, 0)
 
 
-    def _get_or_create_material(self):
+    def _get_or_create_material(self) -> bpy.types.Material:
         mat_name = "ConcMaterial"
         mat = bpy.data.materials.get(mat_name)
         if mat is None:
@@ -208,7 +210,7 @@ class ConcentrationVisualizationHandler(Handler):
         return mat
 
 
-    def _get_or_create_cube(self):
+    def _get_or_create_cube(self) -> bpy.types.Object:
         obj = bpy.data.objects.get("CubeInstance")
         if obj is None:
             bpy.ops.mesh.primitive_cube_add(size=1)
@@ -232,92 +234,102 @@ class ConcentrationVisualizationHandler(Handler):
         return obj
 
 
-
 class StopHandler(Handler):
-    """Handler for stopping the simulation at the end of the simulation time or when reaching max cells."""
+    """Handler for stopping the simulation at the end of the simulation time or when reaching max cells.
+
+    Attributes:
+        max_cells (int | None): The maximum number of cells to allow in the simulation.
+    """
 
     def __init__(self, max_cells=None):
         self.max_cells = max_cells
 
     def run(self, scene, depsgraph):
+        """Run the handler.
+
+        Args:
+            scene (bpy.types.Scene): The Blender scene.
+            depsgraph (bpy.types.Depsgraph): The dependency graph.
+        """
         if not self.get_cells:
             print("Warning: StopHandler not properly initialized. Call setup() first.")
             return
 
+        self._update_point_cache()
+        cell_count = len(self.get_cells())
+        self._print_status(scene, cell_count)
+
+        should_stop, reason = self._check_stop_conditions(scene, cell_count)
+        if should_stop:
+            print(f"{reason}. Stopping.")
+            self._freeze_cells()
+            self._remove_handlers()
+            self._reset_scene()
+
+    def _update_point_cache(self):
+        """Update the point cache for each cell."""
         for cell in self.get_cells():
-            # Only update point cache if the cell has a valid cloth modifier
             if hasattr(cell, 'cloth_mod') and cell.cloth_mod is not None:
                 cell.cloth_mod.point_cache.frame_end = bpy.context.scene.frame_end
 
-        cell_count = len(self.get_cells())
+    def _print_status(self, scene, cell_count):
+        """Print the status of the simulation."""
         frame_str = f"Calculating frame {scene.frame_current}"
-        total_length = len(frame_str) + 8
-        border_line = "=" * total_length
-
+        border_line = "=" * (len(frame_str) + 8)
         print(border_line)
         print(f"=== {frame_str} ===")
         print(border_line)
         print(f"Number of cells: {cell_count}")
 
-        # Check if we've reached either the time limit or cell limit
-        should_stop = False
-        stop_reason = ""
-
+    def _check_stop_conditions(self, scene, cell_count):
+        """Check if the simulation should stop."""
         if scene.frame_current >= bpy.context.scene.frame_end:
-            should_stop = True
-            stop_reason = f"Simulation has reached the last frame: {scene.frame_current}"
+            return True, f"Simulation has reached the last frame: {scene.frame_current}"
 
         if self.max_cells is not None and cell_count >= self.max_cells:
-            should_stop = True
-            stop_reason = f"Simulation has reached maximum number of cells: {cell_count}"
+            return True, f"Simulation has reached maximum number of cells: {cell_count}"
 
-        if should_stop:
-            print(f"{stop_reason}. Stopping.")
+        return False, ""
 
-            try:
-                # Store the current context
-                current_context = bpy.context.area
-                current_mode = bpy.context.mode if hasattr(bpy.context, 'mode') else None
+    def _freeze_cells(self):
+        """Freeze the cells."""
+        try:
+            for cell in self.get_cells():
+                for mod in cell.obj.modifiers:
+                    try:
+                        if bpy.context.mode != 'OBJECT':
+                            bpy.ops.object.mode_set(mode='OBJECT')
+                        bpy.context.view_layer.objects.active = cell.obj
+                        cell.obj.select_set(True)
+                        bpy.ops.object.modifier_apply(modifier=mod.name)
+                    except Exception as e:
+                        print(f"Warning: Could not apply modifier {mod.name} to {cell.name}: {e}")
+                cell.disable_physics()
+                cell.remesh()
+        except Exception as e:
+            print(f"Warning: Could not freeze cells properly: {e}")
+            for cell in self.get_cells():
+                if cell.physics_enabled:
+                    try:
+                        cell.disable_physics()
+                    except Exception:
+                        pass
 
-                # Freeze all cells
-                for cell in self.get_cells():
-                    # Apply all modifiers to get the final state
-                    for mod in cell.obj.modifiers:
-                        try:
-                            # Ensure we're in object mode and the object is active
-                            if bpy.context.mode != 'OBJECT':
-                                bpy.ops.object.mode_set(mode='OBJECT')
-                            bpy.context.view_layer.objects.active = cell.obj
-                            cell.obj.select_set(True)
-                            bpy.ops.object.modifier_apply(modifier=mod.name)
-                        except Exception as e:
-                            print(f"Warning: Could not apply modifier {mod.name} to {cell.name}: {e}")
-                    cell.disable_physics()
-                    cell.remesh()
-            except Exception as e:
-                print(f"Warning: Could not freeze cells properly: {e}")
-                # Still try to disable physics on all cells
-                for cell in self.get_cells():
-                    if cell.physics_enabled:
-                        try:
-                            cell.disable_physics()
-                        except Exception:
-                            pass
+    def _remove_handlers(self):
+        """Remove all frame change handlers."""
+        for handler in bpy.app.handlers.frame_change_pre[:]:
+            bpy.app.handlers.frame_change_pre.remove(handler)
+        for handler in bpy.app.handlers.frame_change_post[:]:
+            bpy.app.handlers.frame_change_post.remove(handler)
 
-            # Remove all handlers
-            for handler in bpy.app.handlers.frame_change_pre[:]:
-                bpy.app.handlers.frame_change_pre.remove(handler)
-            for handler in bpy.app.handlers.frame_change_post[:]:
-                bpy.app.handlers.frame_change_post.remove(handler)
-
-            # Useful when not using sim.run()
-            bpy.context.scene.frame_set(1)
-            try:
-                # Try to cancel animation only if we're in a valid context
-                if bpy.context.area and bpy.context.area.type == 'VIEW_3D':
-                    bpy.ops.screen.animation_cancel()
-            except Exception as e:
-                print(f"Warning: Could not cancel animation: {e}")
+    def _reset_scene(self):
+        """Reset the scene to the first frame."""
+        bpy.context.scene.frame_set(1)
+        try:
+            if bpy.context.area and bpy.context.area.type == 'VIEW_3D':
+                bpy.ops.screen.animation_cancel()
+        except Exception as e:
+            print(f"Warning: Could not cancel animation: {e}")
 
 
 class RemeshHandler(Handler):
@@ -328,17 +340,25 @@ class RemeshHandler(Handler):
         smooth_factor (float): Factor to pass to `bmesh.ops.smooth_vert`.
             Disabled if set to 0.
         voxel_size (float): Factor to pass to `voxel_remesh()`. Disabled if set to 0.
-        sphere_factor (float): Factor to pass to Cast to sphere modifier.
-            Disabled if set to 0.
     """
 
-    def __init__(self, freq=1, voxel_size=None, smooth_factor=0.1, sphere_factor=0):
-        self.freq = freq
-        self.voxel_size = voxel_size
-        self.smooth_factor = smooth_factor
-        self.sphere_factor = sphere_factor
+    def __init__(
+        self,
+        freq: int = 1,
+        voxel_size: float | None = None,
+        smooth_factor: float = 0.1,
+    ):
+        self.freq: int = freq
+        self.voxel_size: float | None = voxel_size
+        self.smooth_factor: float = smooth_factor
 
     def run(self, scene, depsgraph):
+        """Run the handler.
+
+        Args:
+            scene (bpy.types.Scene): The Blender scene.
+            depsgraph (bpy.types.Depsgraph): The dependency graph.
+        """
         if scene.frame_current % self.freq != 0:
             return
         for cell in self.get_cells():
@@ -350,11 +370,7 @@ class RemeshHandler(Handler):
             bm.from_mesh(cell.obj_eval.to_mesh())
             cell.disable_physics()
             if self.smooth_factor:
-                bmesh.ops.smooth_vert(
-                    bm,
-                    verts=bm.verts,
-                    factor=self.smooth_factor,
-                )
+                self._smooth_mesh(bm)
             bm.to_mesh(cell.obj.data)
             bm.free()
             cell.recenter()
@@ -369,6 +385,11 @@ class RemeshHandler(Handler):
             # Recenter and re-enable physics
             cell.enable_physics()
             cell.cloth_mod.point_cache.frame_start = scene.frame_current
+
+    def _smooth_mesh(self, bm):
+        """Smooth the mesh."""
+        if self.smooth_factor:
+            bmesh.ops.smooth_vert(bm, verts=bm.verts, factor=self.smooth_factor)
 
 
 class MolecularHandler(Handler):
@@ -424,56 +445,58 @@ class BoundaryHandler(Handler):
         bpy.context.scene.world["boundary_volume"] = volume
         print(f"Boundary volume: {volume}")
 
+
 class RecenterHandler(Handler):
-    """Handler for updating cell origin and location of
-    cell-associated adhesion locations every frame."""
+    """Handler for updating cell origin and adhesion forces every frame, and storing summary stats."""
 
     def run(self, scene, depsgraph):
         cells = self.get_cells()
+        self._compute_and_store_metrics(cells)
+        for cell in cells:
+            self._update_cell_state(cell)
 
-        cell_number = len(cells)
-        total_volume = np.sum([cell.volume() for cell in cells])
-        average_volume = np.mean([cell.volume() for cell in cells])
+    def _compute_and_store_metrics(self, cells):
+        """Compute and store metrics for the cells.
+
+        Computes and stores the following metrics:
+        - Cell#
+        - Total Volume
+        - Avg Volume
+        - Avg Pressure
+        - Avg Sphericity
+        """
+        volumes = [cell.volume() for cell in cells]
+        sphericities = [s for cell in cells if (s := cell.sphericity()) is not None]
+
         valid_pressures = [
             cell.pressure for cell in cells
-            if hasattr(cell, 'cloth_mod') and cell.cloth_mod
-            and hasattr(cell.cloth_mod, 'settings')
+            if getattr(getattr(cell, 'cloth_mod', None), 'settings', None)
             and hasattr(cell.cloth_mod.settings, 'uniform_pressure_force')
         ]
-        average_pressure = np.mean(valid_pressures) if valid_pressures else 0
-        sphericities = []
-        for cell in cells:
-            sphericity = cell.sphericity()
-            if sphericity is not None:
-                sphericities.append(sphericity)
-        average_sphericity = np.mean(sphericities) if sphericities else 0
 
-        bpy.context.scene.world["Cell#"] = cell_number
-        bpy.context.scene.world["Avg Volume"] = average_volume
-        bpy.context.scene.world["Avg Pressure"] = average_pressure
-        bpy.context.scene.world["Avg Sphericity"] = average_sphericity
-        bpy.context.scene.world["Total Volume"] = total_volume
+        bpy.context.scene.world["Cell#"] = len(cells)
+        bpy.context.scene.world["Total Volume"] = np.sum(volumes)
+        bpy.context.scene.world["Avg Volume"] = np.mean(volumes) if volumes else 0
+        bpy.context.scene.world["Avg Pressure"] = np.mean(valid_pressures) if valid_pressures else 0
+        bpy.context.scene.world["Avg Sphericity"] = np.mean(sphericities) if sphericities else 0
 
-        for cell in self.get_cells():
-            cell.recenter()
+    def _update_cell_state(self, cell):
+        """Update the state of the cell."""
+        cell.recenter()
 
-            # Update adhesion forces if they exist
-            if hasattr(cell, 'adhesion_forces'):
-                cell_size = cell.major_axis().length() / 2
-                for force in cell.adhesion_forces:
-                    if not force.enabled():
-                        continue
-                    force.min_dist = cell_size - 0.4
-                    force.max_dist = cell_size + 0.4
+        if hasattr(cell, 'adhesion_forces'):
+            radius = cell.major_axis().length() / 2
+            for force in cell.adhesion_forces:
+                if force.enabled():
+                    force.min_dist = radius - 0.4
+                    force.max_dist = radius + 0.4
                     force.loc = cell.loc
 
-            # Update motion force if it exists
-            if hasattr(cell, 'motion_force') and cell.motion_force:
-                cell.move()
+        if getattr(cell, 'motion_force', None):
+            cell.move()
 
-            # Update cloth modifier if it exists
-            if hasattr(cell, 'cloth_mod') and cell.cloth_mod:
-                cell.cloth_mod.point_cache.frame_end = bpy.context.scene.frame_end
+        if getattr(cell, 'cloth_mod', None):
+            cell.cloth_mod.point_cache.frame_end = bpy.context.scene.frame_end
 
 
 class GrowthPIDHandler(Handler):
@@ -490,55 +513,61 @@ ForceDist = Enum("ForceDist", ["CONSTANT", "UNIFORM", "GAUSSIAN"])
 class RandomMotionHandler(Handler):
     """Handler for simulating random cell motion.
 
-    At every frame, the direction of motion is is randomly selected
-    from a specified distribution, and the strength is set by the user.
+    At every frame, the direction of motion is randomly selected
+    from a specified distribution and added to a persistent base direction.
 
     Attributes:
-        distribution (ForceDist): Distribution of random location of motion force.
-        strength (int): Strength of the motion force.
-        persistence (tuple[float, float, float]): Persistent direction of motion force.
+        distribution (ForceDist): The distribution of motion.
+        strength (float): The strength of the motion.
+        persistence (tuple[float, float, float]): The persistent base direction.
     """
 
     def __init__(
         self,
         distribution: ForceDist = ForceDist.UNIFORM,
-        strength: int = 0,
-        persistence: tuple[float, float, float] = (0, 0, 0)
+        strength: float = 0.0,
+        persistence: tuple[float, float, float] = (0.0, 0.0, 0.0),
     ):
         self.distribution = distribution
         self.strength = strength
-        self.persistence = persistence
+        self.persistence = Vector(persistence)
 
     def run(self, scene, depsgraph):
         for cell in self.get_cells():
             if not cell.physics_enabled:
                 continue
+            if not getattr(cell, 'motion_force', None):
+                continue
+
             if not cell.motion_force.enabled:
                 cell.motion_force.enable()
 
-            dir = cell.loc
-            match self.distribution:
-                case ForceDist.CONSTANT:
-                    # persistent motion in a single direction
-                    dir = self.persistence
-                case ForceDist.UNIFORM:
-                    # sampled from continuous uniform distribution bounded [0, 1]
-                    dir = Vector(self.persistence) \
-                        + Vector(np.random.uniform(low=-1, high=1, size=(3,)))
-                case ForceDist.GAUSSIAN:
-                    dir = Vector(self.persistence) \
-                        + Vector(np.random.normal(loc=0, scale=1, size=(3,)))
-                case _:
-                    raise ValueError(
-                        "Motion noise distribution must be one of UNIFORM or GAUSSIAN."
-                    )
-            if cell.celltype.motion_strength:
-                cell.motion_force.strength = cell.celltype.motion_strength
-            else:
-                cell.motion_force.strength = self.strength
-            # move motion force
-            cell.move(dir)
-            cell.cloth_mod.point_cache.frame_end = bpy.context.scene.frame_end
+            direction = self._sample_direction()
+            self._apply_motion_force(cell, direction)
+
+            # Extend simulation time as needed
+            if getattr(cell, 'cloth_mod', None):
+                cell.cloth_mod.point_cache.frame_end = bpy.context.scene.frame_end
+
+    def _sample_direction(self) -> Vector:
+        """Sample a direction vector from the given distribution."""
+        match self.distribution:
+            case ForceDist.CONSTANT:
+                return self.persistence
+            case ForceDist.UNIFORM:
+                noise = Vector(np.random.uniform(-1, 1, size=3))
+                return self.persistence + noise
+            case ForceDist.GAUSSIAN:
+                noise = Vector(np.random.normal(0, 1, size=3))
+                return self.persistence + noise
+            case _:
+                raise ValueError(f"Unsupported distribution: {self.distribution}")
+
+    def _apply_motion_force(self, cell: Cell, direction: Vector):
+        """Set strength and apply motion to cell."""
+        strength = getattr(cell.celltype, "motion_strength", self.strength)
+        cell.motion_force.strength = strength
+        cell.move(direction)
 
 
 """Possible properties by which cells are colored."""
@@ -578,8 +607,8 @@ class ColorizeHandler(Handler):
 
     Attributes:
         colorizer (Colorizer): The property by which cells are colored.
-        gene (str): Optional, the gene off of which cell color is based.
-        range (tuple): Optional, range of values for the colorizer. If provided,
+        metabolite (Gene | Molecule | str): Optional, the gene off of which cell color is based..
+        range (tuple[float, float] | None): Optional, range of values for the colorizer. If provided,
             values are scaled relative to this range instead of min-max normalization.
     """
 
@@ -634,7 +663,7 @@ class ColorizeHandler(Handler):
 
         return (hue, saturation, value)
 
-    def _hsv_to_rgb(self, hsv):
+    def _hsv_to_rgb(self, hsv: tuple[float, float, float]) -> tuple[float, float, float]:
         """Convert HSV color to RGB."""
         h, s, v = hsv
         if s == 0.0:
@@ -660,7 +689,7 @@ class ColorizeHandler(Handler):
         else:
             return (v, p, q)
 
-    def _assign_lineage_color(self, cell):
+    def _assign_lineage_color(self, cell: Cell) -> tuple[float, float, float]:
         """Assign a color based on lineage path using inferno-like colormap."""
         if cell.name in self.lineage_colors:
             return self.lineage_colors[cell.name]
@@ -727,26 +756,6 @@ class ColorizeHandler(Handler):
                 color = tuple(blue.lerp(red, value))
             cell.recolor(color)
 
-
-def _get_divisions(cells: list[Cell]) -> list[tuple[str, str, str]]:
-    """Calculate a list of cells that have divided in the past frame.
-
-    Each element of the list contains a tuple of three names: that of the mother
-    cell, and then the two daughter cells.
-
-    Args:
-        cells: List of cells to check for divisions.
-
-    Returns:
-        List of tuples of mother and daughter cell names.
-    """
-    divisions = set()
-    for cell in cells:
-        if cell.get("divided"):
-            divisions.add(
-                (cell.name[:-2], cell.name[:-2] + ".0", cell.name[:-2] + ".1")
-            )
-    return list(divisions)
 
 
 @staticmethod
@@ -854,7 +863,7 @@ def _shape_features(cells: list[Cell]) -> tuple[float, float, float, float]:
     Inlcudes the aspect ratio, sphericity
 
     Args:
-        cell: A cell.
+        cells: A list of cells.
 
     Returns:
         Shape features (aspect ratio, sphericity, compactness, sav_ratio).
@@ -892,7 +901,6 @@ class _all:
     def __get__(self, instance, cls):
         return ~cls(0)
 
-
 class DataFlag(Flag):
     """Enum of data flags used by the :func:`DataExporter` handler.
 
@@ -905,7 +913,10 @@ class DataFlag(Flag):
         VOLUMES: list of the current volumes of each cell.
         PRESSURES: list of the current pressures of each cell.
         CONTACT_AREAS: list of contact areas between each pair of cells.
-        CONCENTRATIONS: concentrations of each molecule in the grid system.
+        SHAPE_FEATURES: list of shape features of each cell.
+        CELL_CONCENTRATIONS: concentrations of each gene in each cell.
+        GENES: level of each gene in the simulation for each cell.
+        GRID: concentrations of each molecule in the grid system.
     """
 
     TIMES = auto()
@@ -925,12 +936,12 @@ class DataFlag(Flag):
 
 
 class DataExporter(Handler):
-    def __init__(self, path=None, options=DataFlag.DEFAULT):
+    def __init__(self, path: str | None = None, options: DataFlag = DataFlag.DEFAULT):
         self.path = path
-        self.h5file = None
         self.options = options
+        self.h5file = None
 
-    def setup(self, get_cells, get_diffsystems, dt):
+    def setup(self, get_cells: Callable[[], list[Cell]], get_diffsystems: Callable[[], DiffusionSystem], dt: float):
         super().setup(get_cells, get_diffsystems, dt)
         self.get_cells = get_cells
         self.get_diffsystems = get_diffsystems
@@ -1065,6 +1076,7 @@ class DataExporter(Handler):
             frame_grp.create_dataset("contact_areas", data=area_data)
             ratios_data = np.array(ratios_data, dtype=dt)
             frame_grp.create_dataset("contact_ratios", data=ratios_data)
+
     def close(self):
         if self.h5file:
             self.h5file.close()
@@ -1228,6 +1240,15 @@ class SliceExporter(Handler):
         return np.array(points)
 
     def points_to_volume_with_labels(self, points: np.ndarray, labels: np.ndarray) -> np.ndarray:
+        """Convert points to a volume with labels.
+
+        Args:
+            points (numpy.ndarray): The points to convert to a volume.
+            labels (numpy.ndarray): The labels for each point.
+
+        Returns:
+            numpy.ndarray: The volume with labels.
+        """
         grid_points = self.world_to_grid_coords(points).astype(int)
 
         # Clip to grid bounds
@@ -1248,10 +1269,10 @@ class SliceExporter(Handler):
         """Downsample the volume array and adjust the scale accordingly.
 
         Args:
-            volume: The original volume array
+            volume (numpy.ndarray): The original volume array
 
         Returns:
-            tuple: (downsampled_volume, new_scale)
+            tuple[numpy.ndarray, tuple[float, float, float]]: (downsampled_volume, new_scale)
         """
         if self.downscale is None:
             return volume, self.scale
@@ -1368,3 +1389,99 @@ class SliceExporter(Handler):
             ds_ds.to_netcdf(output_path_ds)
 
         print(f"Saved point cloud volumes for frame {scene.frame_current}")
+
+class StabilityHandler(Handler):
+    """Handler for detecting and fixing mesh instability.
+
+    Detects instability by checking for edges that are much longer than the mean edge length.
+    When instability is detected, attempts to fix the cell by remeshing it.
+
+    Attributes:
+        length_factor (float): Maximum allowed ratio of any edge length to mean edge length.
+            If any edge is longer than mean_length * length_factor, it indicates instability.
+        min_volume (float): Minimum allowed volume for a cell, as a basic sanity check.
+    """
+
+    def __init__(self, length_factor: float = 3, min_volume: float = 5):
+        self.length_factor = length_factor
+        self.min_volume = min_volume
+
+    def _check_edge_lengths(self, cell: Cell) -> tuple[bool, str]:
+        """Check if any edges are much longer than the mean edge length.
+
+        Args:
+            cell: The cell to check
+
+        Returns:
+            tuple[bool, str]: (is_stable, reason_if_unstable)
+        """
+        try:
+            bm = bmesh.new()
+            bm.from_mesh(cell.obj_eval.to_mesh())
+            bm.transform(cell.obj_eval.matrix_world)
+
+            # Collect all edge lengths
+            edge_lengths = []
+            edge_info = []  # Store (length, v1.index, v2.index) for reporting
+
+            for edge in bm.edges:
+                if not edge.is_valid:
+                    continue
+                length = edge.calc_length()
+                edge_lengths.append(length)
+                edge_info.append((length, edge.verts[0].index, edge.verts[1].index))
+
+            if not edge_lengths:
+                return False, "No valid edges found in mesh"
+
+            # Calculate mean edge length
+            mean_length = sum(edge_lengths) / len(edge_lengths)
+
+            # Find the longest edge
+            longest_edge = max(zip(edge_info, edge_lengths, strict=False), key=lambda x: x[1])
+            (edge_data, length) = longest_edge
+            _, v1_idx, v2_idx = edge_data
+
+            # Check if longest edge exceeds the threshold
+            if length > mean_length * self.length_factor:
+                return False, (
+                    f"Edge between vertices {v1_idx} and {v2_idx} is too long "
+                    f"(length: {length:.2f}, mean: {mean_length:.2f}, "
+                    f"ratio: {length/mean_length:.1f}x)"
+                )
+
+            return True, ""
+        except Exception as e:
+            return False, f"Error during edge length check: {e!s}"
+        finally:
+            bm.free()
+
+    def run(self, scene, depsgraph) -> bool:
+        """Check all cells for instability and attempt to fix unstable cells by remeshing.
+
+        Returns:
+            bool: Always returns True since we handle instability by remeshing
+        """
+        for cell in self.get_cells():
+            if not cell.physics_enabled:
+                continue
+
+            # Basic volume check as a quick sanity check
+            try:
+                if cell.volume() < self.min_volume:
+                    print(f"\nCell {cell.name} volume too small, attempting to fix...")
+                    cell.remesh()
+                    continue
+            except Exception as e:
+                print(f"\nCould not calculate volume for cell {cell.name}: {e}")
+                cell.remesh()
+                continue
+
+            # Main stability check: edge lengths
+            is_stable, reason = self._check_edge_lengths(cell)
+            if not is_stable:
+                print(f"\nCell {cell.name} has abnormal edge lengths: {reason}")
+                print("Attempting to fix by remeshing...")
+                cell.remesh()
+
+        return True
