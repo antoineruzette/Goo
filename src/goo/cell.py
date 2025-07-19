@@ -39,7 +39,8 @@ class Cell(BlenderObject):
         self.obj: bpy.types.Object = None
         self._color: tuple[float, float, float] = None
         self._homo_adhesion_strength: float = None
-        self.voxel_size: float = 0.7
+        self._voxel_size: float = 0.7  # Changed to private variable
+        self._viscosity: float = 25
 
         self.direction = Vector()
         self.adhesion_force: AdhesionForce = None
@@ -74,14 +75,25 @@ class Cell(BlenderObject):
 
     @property
     def voxel_size(self):
-        return self.obj.data.remesh_voxel_size
+        if self.obj and self.obj.data:
+            return self.obj.data.remesh_voxel_size
+        return self._voxel_size
 
     @voxel_size.setter
     def voxel_size(self, voxel_size):
-        self.voxel_size = voxel_size
-        if self.obj:
+        self._voxel_size = voxel_size
+        if self.obj and self.obj.data:
             self.obj.data.remesh_voxel_size = voxel_size
 
+    @property
+    def viscosity(self):
+        return self._viscosity
+
+    @viscosity.setter
+    def viscosity(self, viscosity):
+        self._viscosity = viscosity
+        if self.cloth_mod:
+            self.cloth_mod.settings.air_damping = viscosity
 
     @property
     def mat(self):
@@ -1036,6 +1048,7 @@ class CellType:
         name,
         loc,
         voxel_size: float = 0.7,
+        viscosity: float = 25,
         color: tuple | None = None,
         physics_enabled: bool = True,
         physics_constructor: PhysicsConstructor = None,
@@ -1050,6 +1063,7 @@ class CellType:
         **mesh_kwargs,
     ):
         mesh_kwargs.update(self.kwargs)  # override with settings
+        self.voxel_size = voxel_size
         if obj:
             self.pattern.set_obj(name, obj)
         else:
@@ -1068,6 +1082,7 @@ class CellType:
             if not obj:
                 self.pattern.build_physics(
                     physics_constructor=physics_constructor,
+                    viscosity=viscosity,
                 )
 
         if growth_enabled:
@@ -1194,6 +1209,7 @@ class CellPattern:
     def build_physics(
         self,
         physics_constructor=None,
+        viscosity: float = 25,
     ):
         # Add physics modifiers to cell object
         physics_constructor = self._override(
@@ -1203,6 +1219,7 @@ class CellPattern:
             physics_constructor(self._cell)
             if hasattr(self._cell, 'cloth_mod') and self._cell.cloth_mod:
                 self._cell.cloth_mod.point_cache.frame_end = bpy.context.scene.frame_end
+                self._cell.cloth_mod.settings.air_damping = viscosity
             self._cell.enable_physics()
 
     def build_forces(
