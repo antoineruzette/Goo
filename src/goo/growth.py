@@ -105,14 +105,12 @@ class PIDController(GrowthController):
         integral = self.integral + error
         derivative = error - self.previous_error
         pid = self.Kp * error + self.Ki * integral + self.Kd * derivative
-
         next_pressure = self.previous_pressure + pid * self.PID_scale
 
         # Update previous error and pressure for the next iteration
         self.previous_error = error
         self.integral = integral
         self.previous_pressure = next_pressure
-
         return next_pressure
 
     def step_divided(self, new_volume):
