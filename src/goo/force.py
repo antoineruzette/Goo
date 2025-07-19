@@ -65,7 +65,7 @@ class Force(BlenderObject):
         self.obj.field.falloff_power = falloff
 
     @property
-    def min_dist(self) -> float:
+    def min_dist(self) -> float | None:
         """Minimum distance an object must be from a force to be affected."""
         if self.obj.field.use_min_distance:
             return self.obj.field.min_dist

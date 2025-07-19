@@ -12,13 +12,16 @@
 import os
 import sys
 
+# Add the project source directory to sys.path
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'src')))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "Goo"
 copyright = "2024, Antoine Ruzette, Sean Megason"
 author = "Antoine Ruzette, Sean Megason"
-# release = "1.0.0"
+release = "v1.1.4"
 master_doc = "index"
 
 # -- General configuration ---------------------------------------------------

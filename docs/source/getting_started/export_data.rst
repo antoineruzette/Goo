@@ -5,7 +5,7 @@ Export data
 
 The data structure that is exported is a HDF5 file, and is structured as follows:
 
-.. code-block::
+.. code-block:: text
 
    frame_001/
    ├── time (float)
@@ -39,122 +39,215 @@ The data structure that is exported is a HDF5 file, and is structured as follows
    frame_002/
    ├── cells/
    │   └── ...
-   
+.. _export_data_plot:
 
-1. Use goo.visualization module to plot simulation data
----------------------------------------------------------
+Plotting exported data
+----------------------
 
-Examples of simulation script can be found in the `/simulations/` folder, located `here <https://github.com/megasonlab/Goo/tree/main/simulations>`__. 
-Goo extends Blender towards agent-based simulations of cell mechanics, molecular reactions and gene regulatory networks.
-With Goo, you can create custom scripts to simulate various cellular phenomena by specifying initial conditions and parameters.
+Here's a step-by-step guide to analyze and visualize data from Goo simulations. We'll break down the process into reusable functions and demonstrate their use with cell volume analysis.
 
-Running scripts
-~~~~~~~~~~~~~~~~~~~
-
-Goo scripts typically get ran from Blender's scripting tab, though they can be ran from Visual Studio Code directly using the `developer's extension <https://marketplace.visualstudio.com/items?itemName=JacquesLucke.blender-development>`__ developed by Jacques Lucke. 
-
-Initialization
-~~~~~~~~~~~~~~~~~~~
-All simulation scripts should begin with `goo.reset_modules()` and `reset_scene()` to ensure a clean starting environment. 
-The latter removes all objects from the Blender scene and resets simulation parameters to their default values.
+First, let's import the required libraries:
 
 .. code-block:: python
 
-   import goo
+   import h5py
+   import pandas as pd
+   import matplotlib.pyplot as plt
+   from collections import defaultdict
+   import numpy as np
+   from typing import Dict, List, Tuple
 
-   goo.reset_modules()
-   goo.reset_scene()
+Step 1: Reading Data from HDF5
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Next, define cell types along with their physical properties, such as surface stiffness and adhesion strength. 
-Stiffer cells are less deformable, while higher adhesion strength increases deformation from their initial spherical shape. 
-The ratio of stiffness to adhesion strength influences resulting cell patterns (Garner, Tsai, and Megason, 2022). 
-Most parameters in Goo are dimensionless.
-
-Defining cell types
-~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   cellsA = goo.CellType("A", target_volume=70, pattern="simple")
-   cellsB = goo.CellType("B", target_volume=70, pattern="simple")
-   cellsC = goo.CellType("C", target_volume=70, pattern="simple")
-
-   cellsA.homo_adhesion_strength = 1
-   cellsA.stiffness = 1  # ratio = 1
-   cellsB.homo_adhesion_strength = 500
-   cellsB.stiffness = 1  # ratio = 500
-   cellsC.homo_adhesion_strength = 2000
-   cellsC.stiffness = 1  # ratio = 2000
-
-
-Creating cells
-~~~~~~~~~~~~~~~~~~~
-
-Populate cell types with individual cells using `create_cell()`. Specify their initial location, size, shape, and optional material color for visualization.
+First, we'll create functions to read and organize data from the HDF5 file:
 
 .. code-block:: python
 
-   cellsA.create_cell("A1", (-20, +1.75, 0), color=(1, 1, 0), size=1.6)
-   cellsA.create_cell("A2", (-20, -1.75, 0), color=(1, 1, 0), size=1.6)
+   def get_sorted_frames(h5_file: h5py.File) -> List[str]:
+       """Get frame names from HDF5 file and sort them numerically."""
+       frames = [key for key in h5_file.keys() if key.startswith("frame_")]
+       return sorted(frames, key=lambda x: int(x.split("_")[1]))
 
-   cellsB.create_cell("B1", (0, +1.75, 0), color=(0, 1, 1), size=1.6)
-   cellsB.create_cell("B2", (0, -1.75, 0), color=(0, 1, 1), size=1.6)
+   def extract_cell_property(h5_file: h5py.File, property_name: str) -> pd.DataFrame:
+       """
+       Extract a specific property for all cells across all frames.
+       
+       Args:
+           h5_file: Open HDF5 file
+           property_name: Name of the property to extract (e.g., 'volume', 'pressure')
+           
+       Returns:
+           DataFrame with frames as index and cells as columns
+       """
+       data_over_time = defaultdict(list)
+       frames = get_sorted_frames(h5_file)
+       
+       for frame in frames:
+           cells_group = h5_file[frame]["cells"]
+           
+           for cell_name in cells_group.keys():
+               try:
+                   value = cells_group[cell_name][property_name][()]
+                   data_over_time[cell_name].append(value)
+               except KeyError:
+                   # Handle missing properties gracefully
+                   data_over_time[cell_name].append(np.nan)
+       
+       # Convert to DataFrame
+       frame_indices = [int(f.split("_")[1]) for f in frames]
+       return pd.DataFrame(data_over_time, index=frame_indices)
 
-   cellsC.create_cell("C1", (20, +1.75, 0), color=(1, 0, 1), size=1.6)
-   cellsC.create_cell("C2", (20, -1.75, 0), color=(1, 0, 1), size=1.6)
+Step 2: Analysis Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-Setting up the simulator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To introduce cell behaviors like adhesion, motility and division, use the simulator. It handles the simmulation of cell physics and solving sets of ODEs over time for genetic circuitry. 
-Define total simulation time, time step (`physics_dt` for mechanics, `molecular_dt` for reactions), and which cell types to include in the simulation.
-If not included, objects will remain static.
-
-.. note::
-
-   Goo uses two simulation engines: one for cell mechanics on meshes and one for discrete molecular reactions on KD-trees and gene regulatory circuitry for each cell. 
-   Molecular processes happen at faster time scale than cell mechanics; therefore `physics_dt` typically needs be set at least 10 times larger than `molecular_dt`.
-
-The `setup_world()` function always needs be defined, and it's best practice to always set a random seed for reproducibility. It sets some general parameters (e.g. turning gravity off), units and length scales. 
+Next, let's create functions for analyzing the data:
 
 .. code-block:: python
 
-   sim = goo.Simulator([cellsA, cellsB, cellsC], time=180, physics_dt=1)
-   sim.setup_world(seed=2024)
+   def calculate_theoretical_growth(
+       initial_value: float,
+       time_points: np.ndarray,
+       growth_rate: float = 1.0,
+       max_value: float = 100.0
+   ) -> np.ndarray:
+       """
+       Calculate theoretical linear growth curve.
+       
+       Args:
+           initial_value: Starting value
+           time_points: Array of time points
+           growth_rate: Growth rate (default: 1.0 µm³/min for volume)
+           max_value: Maximum allowed value
+           
+       Returns:
+           Array of theoretical values
+       """
+       return np.minimum(initial_value + time_points * growth_rate, max_value)
 
+   def calculate_rmse(actual: np.ndarray, predicted: np.ndarray) -> float:
+       """Calculate Root Mean Square Error between actual and predicted values."""
+       return np.sqrt(np.mean((actual - predicted)**2))
 
-Appending handlers to the simulator
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 3: Visualization Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Handlers modularly define cell behavior. They execute functions sequentially at every time step. They can take some parameters as arguments to control e.g. the rate of division based on cell volume. 
-Add handlers to the simulator to control these aspects. For example: these lines model cell growth, homotypic adhesion, volume-based division (target volume of 50 :math:`\mu m^3` with a std.dev. of 1) and gaussian random motion. 
+Finally, let's create functions for plotting:
 
 .. code-block:: python
 
-   sim.add_handlers(
-      [
-         goo.GrowthPIDHandler(),                                           # in um3
-         goo.RecenterHandler(),
-         goo.SizeDivisionHandler(goo.BisectDivisionLogic, mu=60, sigma=1), # in um3
-         goo.RandomMotionHandler(goo.ForceDist.GAUSSIAN, strength=500)
-      ]
-   )
+   def setup_plot(figsize: Tuple[int, int] = (12, 8)) -> None:
+       """Set up the plot with standard formatting."""
+       plt.figure(figsize=figsize)
+       plt.grid(True, linestyle='--', alpha=0.5)
 
-.. note::
-   
-   The full list of handlers–cell behaviors the library currently supports–can be found in the codebase documentation. 
+   def plot_cell_property(
+       df: pd.DataFrame,
+       property_name: str,
+       units: str,
+       show_theoretical: bool = True,
+       growth_rate: float = 1.0,
+       max_value: float = 100.0
+   ) -> None:
+       """
+       Create a plot of cell property over time.
+       
+       Args:
+           df: DataFrame with property values
+           property_name: Name of the property being plotted
+           units: Units for the y-axis
+           show_theoretical: Whether to show theoretical growth curve
+           growth_rate: Growth rate for theoretical curve
+           max_value: Maximum value for theoretical curve
+       """
+       setup_plot()
+       
+       # Plot each cell's data
+       for cell in df.columns:
+           plt.plot(df.index, df[cell], label=cell)
+       
+       # Add theoretical curve if requested
+       if show_theoretical:
+           theoretical = calculate_theoretical_growth(
+               df.iloc[0,0], df.index, growth_rate, max_value
+           )
+           plt.plot(df.index, theoretical,
+                   label="theoretical linear growth",
+                   linestyle="--", color="black", alpha=0.5)
+           
+           # Calculate and display RMSE
+           rmses = [calculate_rmse(df[col], theoretical) for col in df.columns]
+           avg_rmse = np.mean(rmses)
+           plt.text(0.02, 0.98, f'Avg RMSE: {avg_rmse:.2f}',
+                   transform=plt.gca().transAxes,
+                   verticalalignment='top', fontsize=12)
+       
+       # Customize plot
+       plt.xlabel("Time (min)", fontsize=16)
+       plt.ylabel(f"{property_name} ({units})", fontsize=16)
+       plt.legend(title="", fontsize=10, loc="lower right")
+       plt.tight_layout()
 
-When put all together, this is the script outlined:
+Step 4: Putting It All Together
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. admonition:: Goo script
-   :class: dropdown
+Here's how to use these functions to analyze cell volumes:
 
-   .. literalinclude:: ../examples/1_growing_doublets.py
-      :language: python
+.. code-block:: python
 
-Running this script in Blender produces the following simulation:
+   # Path to your HDF5 data file
+   h5_path = "path/to/your/data.h5"
 
-.. video:: ../examples/1_growing_doublets.mp4
-   :width: 740
-   :loop:
+   # Read and plot cell volumes
+   with h5py.File(h5_path, "r") as f:
+       # Extract volume data
+       volume_df = extract_cell_property(f, "volume")
+       
+       # Create the plot
+       plot_cell_property(
+           df=volume_df,
+           property_name="Volume",
+           units="µm³",
+           show_theoretical=True,
+           growth_rate=1.0,
+           max_value=100.0
+       )
+       plt.show()
+
+This modular approach makes it easy to:
+
+1. Extract different cell properties by changing the property name:
+
+   .. code-block:: python
+
+      pressure_df = extract_cell_property(f, "pressure")
+      plot_cell_property(pressure_df, "Pressure", "Pa")
+
+2. Customize plots with different parameters:
+
+   .. code-block:: python
+
+      plot_cell_property(
+          volume_df, "Volume", "µm³",
+          show_theoretical=False  # Skip theoretical comparison
+      )
+
+3. Analyze multiple properties in sequence:
+
+   .. code-block:: python
+
+      properties = ["volume", "pressure", "aspect_ratio"]
+      units = ["µm³", "Pa", "ratio"]
+      
+      for prop, unit in zip(properties, units):
+          df = extract_cell_property(f, prop)
+          plot_cell_property(df, prop.replace("_", " ").title(), unit)
+          plt.show()
+
+The functions handle common issues like:
+- Missing data points
+- Proper scientific notation
+- Consistent plot formatting
+- Error calculation
+- Theoretical model comparison
+

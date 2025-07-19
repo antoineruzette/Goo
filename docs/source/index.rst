@@ -24,6 +24,7 @@ Getting started
    
    getting_started/installation.rst
    getting_started/example_scripts.rst
+   getting_started/export_data.rst
    user_guide/api.rst
    getting_started/hardware.rst   
    
