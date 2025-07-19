@@ -39,6 +39,7 @@ class Cell(BlenderObject):
         self.obj: bpy.types.Object = None
         self._color: tuple[float, float, float] = None
         self._homo_adhesion_strength: float = None
+        self.voxel_size: float = 0.7
 
         self.direction = Vector()
         self.adhesion_force: AdhesionForce = None
@@ -70,6 +71,17 @@ class Cell(BlenderObject):
             self.effectors.name = name + "_effectors"
         if self.motion_force:
             self.motion_force.name = name + "_motion"
+
+    @property
+    def voxel_size(self):
+        return self.obj.data.remesh_voxel_size
+
+    @voxel_size.setter
+    def voxel_size(self, voxel_size):
+        self.voxel_size = voxel_size
+        if self.obj:
+            self.obj.data.remesh_voxel_size = voxel_size
+
 
     @property
     def mat(self):
@@ -1023,6 +1035,7 @@ class CellType:
         self,
         name,
         loc,
+        voxel_size: float = 0.7,
         color: tuple | None = None,
         physics_enabled: bool = True,
         physics_constructor: PhysicsConstructor = None,
@@ -1070,7 +1083,7 @@ class CellType:
             )
         cell = self.pattern.retrieve_cell()
         cell.celltype = self
-        cell.remesh()
+        cell.remesh(voxel_size=voxel_size)
 
         # Apply diffusion system if one exists for this cell type
         if self._diffsys is not None:
