@@ -168,7 +168,7 @@ class ClothConstructor(ModConstructor):
 
         mod.settings.quality = 10
         try:
-            mod.settings.air_damping = 500  # will work if custom blender version is used
+            mod.settings.air_damping = 250  # will work if custom blender version is used
         except (AttributeError, TypeError):
             mod.settings.air_damping = 10  # defaults
         mod.settings.bending_model = "ANGULAR"
