@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.growth - Goo documentation</title>
+        <title>goo.growth - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.division.html">goo.division</a></li>
@@ -262,8 +263,9 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for goo.growth</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
 
 <span class="sd">&quot;&quot;&quot;Possible types of growth.&quot;&quot;&quot;</span>
 <span class="n">GrowthType</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;Growth&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;LINEAR&quot;</span><span class="p">,</span> <span class="s2">&quot;EXPONENTIAL&quot;</span><span class="p">,</span> <span class="s2">&quot;LOGISTIC&quot;</span><span class="p">])</span>
@@ -320,16 +322,16 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">current_volume</span><span class="p">,</span>
-        <span class="n">growth_type</span><span class="o">=</span><span class="n">GrowthType</span><span class="o">.</span><span class="n">LINEAR</span><span class="p">,</span>
+        <span class="n">growth_type</span><span class="o">=</span><span class="n">GrowthType</span><span class="o">.</span><span class="n">LOGISTIC</span><span class="p">,</span>
         <span class="n">growth_rate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">initial_pressure</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+        <span class="n">initial_pressure</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
         <span class="n">target_volume</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
         <span class="n">Kp</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
         <span class="n">Ki</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span>
         <span class="n">Kd</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">growth_type</span> <span class="o">=</span> <span class="n">growth_type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">growth_rate</span> <span class="o">=</span> <span class="n">growth_rate</span>  <span class="c1"># in cubic microns per frame</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">growth_rate</span> <span class="o">=</span> <span class="n">growth_rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Kp</span> <span class="o">=</span> <span class="n">Kp</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Ki</span> <span class="o">=</span> <span class="n">Ki</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Kd</span> <span class="o">=</span> <span class="n">Kd</span>
@@ -390,14 +392,12 @@
         <span class="n">integral</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">integral</span> <span class="o">+</span> <span class="n">error</span>
         <span class="n">derivative</span> <span class="o">=</span> <span class="n">error</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_error</span>
         <span class="n">pid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kp</span> <span class="o">*</span> <span class="n">error</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ki</span> <span class="o">*</span> <span class="n">integral</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">Kd</span> <span class="o">*</span> <span class="n">derivative</span>
-
         <span class="n">next_pressure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">previous_pressure</span> <span class="o">+</span> <span class="n">pid</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">PID_scale</span>
 
         <span class="c1"># Update previous error and pressure for the next iteration</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previous_error</span> <span class="o">=</span> <span class="n">error</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">integral</span> <span class="o">=</span> <span class="n">integral</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">previous_pressure</span> <span class="o">=</span> <span class="n">next_pressure</span>
-
         <span class="k">return</span> <span class="n">next_pressure</span></div>
 
 
@@ -420,7 +420,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -440,7 +440,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

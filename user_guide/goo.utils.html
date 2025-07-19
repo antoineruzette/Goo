@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Hardware recommendations" href="../getting_started/hardware.html" /><link rel="prev" title="goo.boundary" href="goo.boundary.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.utils - Goo documentation</title>
+        <title>goo.utils - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -205,6 +205,7 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="goo.division.html">goo.division</a></li>
@@ -318,6 +319,22 @@
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="goo.utils.BoundaryClothConstructor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.utils.</span></span><span class="sig-name descname"><span class="pre">BoundaryClothConstructor</span></span><a class="reference internal" href="../_modules/goo/utils.html#BoundaryClothConstructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.utils.BoundaryClothConstructor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#goo.utils.ClothConstructor" title="goo.utils.ClothConstructor"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClothConstructor</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.utils.BoundaryClothConstructor.setup_mod">
+<span class="sig-name descname"><span class="pre">setup_mod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ClothModifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/utils.html#BoundaryClothConstructor.setup_mod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.utils.BoundaryClothConstructor.setup_mod" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mod</strong> (<em>ClothModifier</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="goo.utils.BoundaryCollisionConstructor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.utils.</span></span><span class="sig-name descname"><span class="pre">BoundaryCollisionConstructor</span></span><a class="reference internal" href="../_modules/goo/utils.html#BoundaryCollisionConstructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.utils.BoundaryCollisionConstructor" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#goo.utils.CollisionConstructor" title="goo.utils.CollisionConstructor"><code class="xref py py-class docutils literal notranslate"><span class="pre">CollisionConstructor</span></code></a></p>
@@ -327,6 +344,22 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>mod</strong> (<em>CollisionModifier</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="goo.utils.BoundarySubsurfConstructor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.utils.</span></span><span class="sig-name descname"><span class="pre">BoundarySubsurfConstructor</span></span><a class="reference internal" href="../_modules/goo/utils.html#BoundarySubsurfConstructor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.utils.BoundarySubsurfConstructor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#goo.utils.SubsurfConstructor" title="goo.utils.SubsurfConstructor"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubsurfConstructor</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.utils.BoundarySubsurfConstructor.setup_mod">
+<span class="sig-name descname"><span class="pre">setup_mod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SubsurfModifier</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/utils.html#BoundarySubsurfConstructor.setup_mod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.utils.BoundarySubsurfConstructor.setup_mod" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mod</strong> (<em>SubsurfModifier</em>)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -547,7 +580,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -586,8 +619,16 @@
 <li><a class="reference internal" href="#goo.utils.BlenderObject.name"><code class="docutils literal notranslate"><span class="pre">BlenderObject.name</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#goo.utils.BoundaryClothConstructor"><code class="docutils literal notranslate"><span class="pre">BoundaryClothConstructor</span></code></a><ul>
+<li><a class="reference internal" href="#goo.utils.BoundaryClothConstructor.setup_mod"><code class="docutils literal notranslate"><span class="pre">BoundaryClothConstructor.setup_mod()</span></code></a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#goo.utils.BoundaryCollisionConstructor"><code class="docutils literal notranslate"><span class="pre">BoundaryCollisionConstructor</span></code></a><ul>
 <li><a class="reference internal" href="#goo.utils.BoundaryCollisionConstructor.setup_mod"><code class="docutils literal notranslate"><span class="pre">BoundaryCollisionConstructor.setup_mod()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#goo.utils.BoundarySubsurfConstructor"><code class="docutils literal notranslate"><span class="pre">BoundarySubsurfConstructor</span></code></a><ul>
+<li><a class="reference internal" href="#goo.utils.BoundarySubsurfConstructor.setup_mod"><code class="docutils literal notranslate"><span class="pre">BoundarySubsurfConstructor.setup_mod()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#goo.utils.ClothConstructor"><code class="docutils literal notranslate"><span class="pre">ClothConstructor</span></code></a><ul>
@@ -643,7 +684,7 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

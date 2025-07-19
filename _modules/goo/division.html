@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.division - Goo documentation</title>
+        <title>goo.division - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.division.html">goo.division</a></li>
@@ -262,19 +263,19 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for goo.division</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">bmesh</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">override</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">goo.cell</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">goo.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">goo.handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Handler</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">goo.molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionSystem</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">override</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">goo.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 
 <div class="viewcode-block" id="DivisionLogic">
@@ -319,6 +320,7 @@
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        margin (float): Distance of margin between divided cells.</span>
+<span class="sd">        to_flush (list[tuple[bmesh.types.BMesh, Cell]]): List of bmesh objects and cells to flush.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">0.025</span><span class="p">):</span>
@@ -328,7 +330,7 @@
 <div class="viewcode-block" id="BisectDivisionLogic.make_divide">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.BisectDivisionLogic.make_divide">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">make_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mother</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mother</span><span class="p">:</span> <span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Cell</span><span class="p">,</span> <span class="n">Cell</span><span class="p">]:</span>
         <span class="n">com</span> <span class="o">=</span> <span class="n">mother</span><span class="o">.</span><span class="n">COM</span><span class="p">(</span><span class="n">local_coords</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="n">mother</span><span class="o">.</span><span class="n">major_axis</span><span class="p">()</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="n">local_coords</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">base_name</span> <span class="o">=</span> <span class="n">mother</span><span class="o">.</span><span class="n">name</span>
@@ -354,7 +356,7 @@
         <span class="n">axis</span><span class="p">:</span> <span class="n">Axis</span><span class="p">,</span>
         <span class="n">inner</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
         <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="p">):</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bmesh</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">BMesh</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Bisect a mesh along a plane defined by center of mass and axis.</span>
 
 <span class="sd">        Args:</span>
@@ -393,6 +395,7 @@
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.BisectDivisionLogic.flush">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Flush the bmesh objects and cells from the division logic.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">bm</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_flush</span><span class="p">:</span>
             <span class="n">bm</span><span class="o">.</span><span class="n">to_mesh</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
             <span class="n">bm</span><span class="o">.</span><span class="n">free</span><span class="p">()</span>
@@ -407,16 +410,20 @@
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.BooleanDivisionLogic">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BooleanDivisionLogic</span><span class="p">(</span><span class="n">DivisionLogic</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Division logic that creates a plane of division and applies the Boolean</span>
-<span class="sd">    modifier to create a division.&quot;&quot;&quot;</span>
+<span class="sd">    modifier to create a division.</span>
 
-    <span class="c1"># TODO: Update to work with physics.</span>
+<span class="sd">    Boolean division is depreciated and will be removed in the future. The reason behind this is that</span>
+<span class="sd">    it is not possible to apply the Boolean modifier to a cell with physics enabled; therefore leads</span>
+<span class="sd">    to instability and simulation failure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
 <div class="viewcode-block" id="BooleanDivisionLogic.make_divide">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.BooleanDivisionLogic.make_divide">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">make_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mother</span><span class="p">:</span> <span class="n">Cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mother</span><span class="p">:</span> <span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Cell</span><span class="p">,</span> <span class="n">Cell</span><span class="p">]:</span>
 
         <span class="n">plane</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_division_plane</span><span class="p">(</span>
             <span class="n">mother</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">mother</span><span class="o">.</span><span class="n">major_axis</span><span class="p">(),</span> <span class="n">mother</span><span class="o">.</span><span class="n">COM</span><span class="p">()</span>
@@ -440,6 +447,10 @@
         <span class="n">daughter</span> <span class="o">=</span> <span class="n">Cell</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">selected_objects</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">daughter</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">select_set</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
+        <span class="c1"># Copy mother&#39;s pressure to daughter</span>
+        <span class="k">if</span> <span class="n">mother</span><span class="o">.</span><span class="n">cloth_mod</span> <span class="ow">and</span> <span class="n">daughter</span><span class="o">.</span><span class="n">cloth_mod</span><span class="p">:</span>
+            <span class="n">daughter</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">mother</span><span class="o">.</span><span class="n">pressure</span>
+
         <span class="n">daughter</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">mother</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.1&quot;</span>
         <span class="n">mother</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">mother</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;.0&quot;</span>
 
@@ -460,7 +471,7 @@
         <span class="k">pass</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_create_division_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">major_axis</span><span class="p">,</span> <span class="n">com</span><span class="p">,</span> <span class="n">collection</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_division_plane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">major_axis</span><span class="p">:</span> <span class="n">Axis</span><span class="p">,</span> <span class="n">com</span><span class="p">:</span> <span class="n">Vector</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Object</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Creates a plane orthogonal to the long axis vector</span>
 <span class="sd">        and passing through the cell&#39;s center of mass.</span>
@@ -497,12 +508,14 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        division_logic (DivisionLogic): The division logic used to execute cell</span>
 <span class="sd">            division.</span>
+<span class="sd">        mu (float): Mean metric for determining cell division.</span>
+<span class="sd">        sigma (float): Standard deviation of the metric for determining cell division.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">division_logic</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">division_logic</span> <span class="o">=</span> <span class="n">division_logic</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span> <span class="o">=</span> <span class="n">mu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">division_logic</span><span class="p">:</span> <span class="n">DivisionLogic</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">division_logic</span><span class="p">:</span> <span class="n">DivisionLogic</span> <span class="o">=</span> <span class="n">division_logic</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">sigma</span>
 
 <div class="viewcode-block" id="DivisionHandler.setup">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.DivisionHandler.setup">[docs]</a>
@@ -512,8 +525,8 @@
         <span class="n">get_cells</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cell</span><span class="p">]],</span>
         <span class="n">get_diffsystems</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">list</span><span class="p">[</span><span class="n">DiffusionSystem</span><span class="p">]],</span>
         <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DivisionHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">get_cells</span><span class="p">,</span> <span class="n">get_diffsystems</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">get_cells</span><span class="p">,</span> <span class="n">get_diffsystems</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cells</span><span class="p">():</span>
             <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;divided&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cells_to_update</span> <span class="o">=</span> <span class="p">[]</span></div>
@@ -588,14 +601,14 @@
 <span class="sd">        var (float): Variance in the time interval.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">division_logic</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TimeDivisionHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">division_logic</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">division_logic</span><span class="p">:</span> <span class="n">DivisionLogic</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">division_logic</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TimeDivisionHandler.setup">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.TimeDivisionHandler.setup">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_cells</span><span class="p">,</span> <span class="n">get_diffsystem</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">TimeDivisionHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">get_cells</span><span class="p">,</span> <span class="n">get_diffsystem</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_cells</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cell</span><span class="p">]],</span> <span class="n">get_diffsystem</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">DiffusionSystem</span><span class="p">],</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">get_cells</span><span class="p">,</span> <span class="n">get_diffsystem</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cells</span><span class="p">():</span>
             <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;last_division_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span></div>
 
@@ -603,7 +616,7 @@
 <div class="viewcode-block" id="TimeDivisionHandler.can_divide">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.TimeDivisionHandler.can_divide">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">can_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_current</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
         <span class="k">if</span> <span class="s2">&quot;last_division_time&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cell</span><span class="p">:</span>
             <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;last_division_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
@@ -616,7 +629,7 @@
 <div class="viewcode-block" id="TimeDivisionHandler.update_on_divide">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.TimeDivisionHandler.update_on_divide">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_on_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_on_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_current</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
         <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;last_division_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span></div>
 </div>
@@ -632,29 +645,43 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        division_logic (DivisionLogic): see base class.</span>
 <span class="sd">        threshold (float): minimum size of cell able to divide.</span>
+<span class="sd">        one_division_only (bool): if True, cells will only divide once and never again.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">division_logic</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">SizeDivisionHandler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">division_logic</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">division_logic</span><span class="p">:</span> <span class="n">DivisionLogic</span><span class="p">,</span> <span class="n">mu</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">sigma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">one_division_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">division_logic</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">one_division_only</span> <span class="o">=</span> <span class="n">one_division_only</span>
+
+<div class="viewcode-block" id="SizeDivisionHandler.setup">
+<a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.SizeDivisionHandler.setup">[docs]</a>
+    <span class="nd">@override</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_cells</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cell</span><span class="p">]],</span> <span class="n">get_diffsystem</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">DiffusionSystem</span><span class="p">],</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">get_cells</span><span class="p">,</span> <span class="n">get_diffsystem</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="c1"># Initialize has_divided property for all cells</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cells</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;has_divided&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cell</span><span class="p">:</span>
+                <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;has_divided&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+
 
 <div class="viewcode-block" id="SizeDivisionHandler.can_divide">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.SizeDivisionHandler.can_divide">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">can_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">):</span>
-        <span class="c1"># time = bpy.context.scene.frame_current * self.dt</span>
-        <span class="c1"># if &quot;last_division_time&quot; not in cell:</span>
-        <span class="c1">#     cell[&quot;last_division_time&quot;] = time</span>
-            
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="c1"># If one_division_only is True and cell has already divided, prevent further division</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_division_only</span> <span class="ow">and</span> <span class="s2">&quot;has_divided&quot;</span> <span class="ow">in</span> <span class="n">cell</span> <span class="ow">and</span> <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;has_divided&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
         <span class="n">div_volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cell</span><span class="o">.</span><span class="n">volume</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">div_volume</span></div>
 
-    
+
 <div class="viewcode-block" id="SizeDivisionHandler.update_on_divide">
 <a class="viewcode-back" href="../../user_guide/goo.division.html#goo.division.SizeDivisionHandler.update_on_divide">[docs]</a>
     <span class="nd">@override</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_on_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_on_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_current</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
-        <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;last_division_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span></div>
+        <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;last_division_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="n">cell</span><span class="p">[</span><span class="s2">&quot;has_divided&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span></div>
 </div>
 
 </pre></div>
@@ -669,7 +696,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -689,7 +716,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

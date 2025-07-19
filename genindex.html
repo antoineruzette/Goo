@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 --><title>Index - Goo documentation</title>
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 --><title>Index - Goo v1.1.4 documentation</title>
 <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -165,7 +165,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -192,7 +192,7 @@
     <img class="sidebar-logo" src="_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -203,6 +203,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/goo.division.html">goo.division</a></li>
@@ -321,10 +322,16 @@
           <li><a href="user_guide/goo.force.html#goo.force.Boundary">(class in goo.force)</a>
 </li>
         </ul></li>
+        <li><a href="user_guide/goo.utils.html#goo.utils.BoundaryClothConstructor">BoundaryClothConstructor (class in goo.utils)</a>
+</li>
         <li><a href="user_guide/goo.utils.html#goo.utils.BoundaryCollisionConstructor">BoundaryCollisionConstructor (class in goo.utils)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="user_guide/goo.handler.html#goo.handler.BoundaryHandler">BoundaryHandler (class in goo.handler)</a>
+</li>
+        <li><a href="user_guide/goo.utils.html#goo.utils.BoundarySubsurfConstructor">BoundarySubsurfConstructor (class in goo.utils)</a>
+</li>
         <li><a href="user_guide/goo.cell.html#goo.cell.CellPattern.build_forces">build_forces() (goo.cell.CellPattern method)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.CellPattern.build_growth_controller">build_growth_controller() (goo.cell.CellPattern method)</a>
@@ -365,8 +372,6 @@
 </li>
         <li><a href="user_guide/goo.gene.html#goo.gene.CircuitEngine">CircuitEngine (class in goo.gene)</a>
 </li>
-        <li><a href="user_guide/goo.cell.html#goo.cell.CellPattern.circuits">circuits (goo.cell.CellPattern attribute)</a>
-</li>
         <li><a href="user_guide/goo.handler.html#goo.handler.DataExporter.close">close() (goo.handler.DataExporter method)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.cloth_mod">cloth_mod (goo.cell.Cell property)</a>
@@ -391,13 +396,17 @@
         </ul></li>
         <li><a href="user_guide/goo.handler.html#goo.handler.ColorizeHandler">ColorizeHandler (class in goo.handler)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.handler.html#goo.handler.Colorizer">Colorizer (class in goo.handler)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.COM">COM() (goo.cell.Cell method)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.compactness">compactness() (goo.cell.Cell method)</a>
+</li>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.Molecule.conc">conc (goo.molecule.Molecule property)</a>
+</li>
+        <li><a href="user_guide/goo.handler.html#goo.handler.ConcentrationVisualizationHandler">ConcentrationVisualizationHandler (class in goo.handler)</a>
 </li>
         <li><a href="user_guide/goo.handler.html#goo.handler.ForceDist.CONSTANT">CONSTANT (goo.handler.ForceDist attribute)</a>
 </li>
@@ -429,8 +438,6 @@
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.create_direction_updater">create_direction_updater() (in module goo.cell)</a>
 </li>
-        <li><a href="user_guide/goo.force.html#goo.force.create_force">create_force() (in module goo.force)</a>
-</li>
         <li><a href="user_guide/goo.utils.html#goo.utils.create_material">create_material() (in module goo.utils)</a>
 </li>
         <li><a href="user_guide/goo.utils.html#goo.utils.create_mesh">create_mesh() (in module goo.utils)</a>
@@ -449,22 +456,26 @@
   <h2>D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.Molecule.D">D (goo.molecule.Molecule property)</a>
+</li>
         <li><a href="user_guide/goo.handler.html#goo.handler.DataExporter">DataExporter (class in goo.handler)</a>
 </li>
         <li><a href="user_guide/goo.handler.html#goo.handler.DataFlag">DataFlag (class in goo.handler)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.declare_settings">declare_settings() (in module goo.cell)</a>
 </li>
+        <li><a href="user_guide/goo.handler.html#goo.handler.DataFlag.DEFAULT">DEFAULT (goo.handler.DataFlag attribute)</a>
+</li>
         <li><a href="user_guide/goo.cell.html#goo.cell.CellType.default_celltype">default_celltype() (goo.cell.CellType static method)</a>
 </li>
         <li><a href="user_guide/goo.gene.html#goo.gene.DegFirstOrder">DegFirstOrder (class in goo.gene)</a>
 </li>
-        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.diffuse">diffuse() (goo.molecule.DiffusionSystem method)</a>
-</li>
-        <li><a href="user_guide/goo.handler.html#goo.handler.DiffusionHandler">DiffusionHandler (class in goo.handler)</a>
+        <li><a href="user_guide/goo.cell.html#goo.cell.CellType.diffsys">diffsys (goo.cell.CellType property)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.diffuse">diffuse() (goo.molecule.DiffusionSystem method)</a>
+</li>
         <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem">DiffusionSystem (class in goo.molecule)</a>
 </li>
         <li><a href="user_guide/goo.force.html#goo.force.Force.disable">disable() (goo.force.Force method)</a>
@@ -547,7 +558,11 @@
 </li>
         <li><a href="user_guide/goo.handler.html#goo.handler.Colorizer.GENE">GENE (goo.handler.Colorizer attribute)</a>
 </li>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.gene_concs">gene_concs (goo.cell.Cell property)</a>
+</li>
         <li><a href="user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork">GeneRegulatoryNetwork (class in goo.gene)</a>
+</li>
+        <li><a href="user_guide/goo.handler.html#goo.handler.DataFlag.GENES">GENES (goo.handler.DataFlag attribute)</a>
 </li>
         <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_ball_concentrations">get_ball_concentrations() (goo.molecule.DiffusionSystem method)</a>
 </li>
@@ -555,15 +570,15 @@
 </li>
         <li><a href="user_guide/goo.simulator.html#goo.simulator.Simulator.get_cells_func">get_cells_func() (goo.simulator.Simulator method)</a>
 </li>
-        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_concentration">get_concentration() (goo.molecule.DiffusionSystem method)</a>
-</li>
-        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_coords_concentrations">get_coords_concentrations() (goo.molecule.DiffusionSystem method)</a>
-</li>
         <li><a href="user_guide/goo.simulator.html#goo.simulator.Simulator.get_diffsystem_func">get_diffsystem_func() (goo.simulator.Simulator method)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.get_modifier">get_modifier() (goo.cell.Cell method)</a>
 </li>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_molecule_concentration">get_molecule_concentration() (goo.molecule.DiffusionSystem method)</a>
+</li>
         <li><a href="user_guide/goo.handler.html#goo.handler.SliceExporter.get_scene_bounds">get_scene_bounds() (goo.handler.SliceExporter method)</a>
+</li>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_total_ball_concentrations">get_total_ball_concentrations() (goo.molecule.DiffusionSystem method)</a>
 </li>
         <li><a href="user_guide/goo.force.html#goo.force.ForceCollection.global_forces">global_forces() (goo.force.ForceCollection static method)</a>
 </li>
@@ -646,6 +661,8 @@
           <li><a href="user_guide/goo.utils.html#module-goo.utils">module</a>
 </li>
         </ul></li>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.Molecule.gradient">gradient (goo.molecule.Molecule property)</a>
+</li>
         <li><a href="user_guide/goo.handler.html#goo.handler.DataFlag.GRID">GRID (goo.handler.DataFlag attribute)</a>
 </li>
         <li><a href="user_guide/goo.growth.html#goo.growth.GrowthController">GrowthController (class in goo.growth)</a>
@@ -664,14 +681,16 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.handler.html#goo.handler.Handler">Handler (class in goo.handler)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.force.html#goo.force.ForceCollection.hide">hide() (goo.force.ForceCollection method)</a>
 
         <ul>
           <li><a href="user_guide/goo.utils.html#goo.utils.BlenderObject.hide">(goo.utils.BlenderObject method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.homo_adhesion_strength">homo_adhesion_strength (goo.cell.Cell property)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -682,14 +701,16 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.force.html#goo.force.Force.impulse_clamp">impulse_clamp (goo.force.Force property)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.cell.html#goo.cell.CellPattern.initial_pressure">initial_pressure (goo.cell.CellPattern attribute)</a>
 
         <ul>
           <li><a href="user_guide/goo.cell.html#goo.cell.StandardPattern.initial_pressure">(goo.cell.StandardPattern attribute)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.is_collapsed">is_collapsed() (goo.cell.Cell method)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -728,8 +749,18 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.utils.html#goo.utils.Axis.length">length() (goo.utils.Axis method)</a>
 </li>
+        <li><a href="user_guide/goo.handler.html#goo.handler.Colorizer.LINEAGE_DISTANCE">LINEAGE_DISTANCE (goo.handler.Colorizer attribute)</a>
+</li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.link_gene_to_property">link_gene_to_property() (goo.cell.Cell method)</a>
 </li>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.link_molecule_to_property">link_molecule_to_property() (goo.cell.Cell method)</a>
+
+        <ul>
+          <li><a href="user_guide/goo.cell.html#goo.cell.CellType.link_molecule_to_property">(goo.cell.CellType method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.gene.html#goo.gene.CircuitEngine.load_circuits">load_circuits() (goo.gene.CircuitEngine method)</a>
 
         <ul>
@@ -738,8 +769,6 @@
           <li><a href="user_guide/goo.gene.html#goo.gene.RoadRunnerEngine.load_circuits">(goo.gene.RoadRunnerEngine method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.gene.html#goo.gene.RoadRunnerEngine.load_sbml">load_sbml() (goo.gene.RoadRunnerEngine method)</a>
 </li>
         <li><a href="user_guide/goo.utils.html#goo.utils.BlenderObject.loc">loc (goo.utils.BlenderObject property)</a>
@@ -769,15 +798,11 @@
         <li><a href="user_guide/goo.cell.html#goo.cell.CellPattern.mesh_kwargs">mesh_kwargs (goo.cell.CellPattern attribute)</a>
 
         <ul>
+          <li><a href="user_guide/goo.cell.html#goo.cell.SimplePattern.mesh_kwargs">(goo.cell.SimplePattern attribute)</a>
+</li>
           <li><a href="user_guide/goo.cell.html#goo.cell.StandardPattern.mesh_kwargs">(goo.cell.StandardPattern attribute)</a>
 </li>
           <li><a href="user_guide/goo.cell.html#goo.cell.YolkPattern.mesh_kwargs">(goo.cell.YolkPattern attribute)</a>
-</li>
-        </ul></li>
-        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.metabolites">metabolites (goo.cell.Cell property)</a>
-
-        <ul>
-          <li><a href="user_guide/goo.cell.html#goo.cell.CellPattern.metabolites">(goo.cell.CellPattern attribute)</a>
 </li>
         </ul></li>
         <li><a href="user_guide/goo.force.html#goo.force.Force.min_dist">min_dist (goo.force.Force property)</a>
@@ -815,7 +840,13 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="user_guide/goo.handler.html#goo.handler.MolecularHandler">MolecularHandler (class in goo.handler)</a>
+</li>
         <li><a href="user_guide/goo.molecule.html#goo.molecule.Molecule">Molecule (class in goo.molecule)</a>
+</li>
+        <li><a href="user_guide/goo.handler.html#goo.handler.Colorizer.MOLECULE">MOLECULE (goo.handler.Colorizer attribute)</a>
+</li>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.molecule_concs">molecule_concs (goo.cell.Cell property)</a>
 </li>
         <li><a href="user_guide/goo.handler.html#goo.handler.DataFlag.MOTION_PATH">MOTION_PATH (goo.handler.DataFlag attribute)</a>
 </li>
@@ -843,6 +874,8 @@
 
         <ul>
           <li><a href="user_guide/goo.force.html#goo.force.ForceCollection.name">(goo.force.ForceCollection property)</a>
+</li>
+          <li><a href="user_guide/goo.molecule.html#goo.molecule.Molecule.name">(goo.molecule.Molecule property)</a>
 </li>
           <li><a href="user_guide/goo.utils.html#goo.utils.BlenderObject.name">(goo.utils.BlenderObject property)</a>
 </li>
@@ -903,7 +936,7 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="user_guide/goo.handler.html#goo.handler.SliceExporter.points_to_volume">points_to_volume() (goo.handler.SliceExporter method)</a>
+        <li><a href="user_guide/goo.handler.html#goo.handler.SliceExporter.points_to_volume_with_labels">points_to_volume_with_labels() (goo.handler.SliceExporter method)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.pressure">pressure (goo.cell.Cell property)</a>
 </li>
@@ -940,7 +973,11 @@
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.recolor">recolor() (goo.cell.Cell method)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.remesh">remesh() (goo.cell.Cell method)</a>
+
+        <ul>
+          <li><a href="user_guide/goo.force.html#goo.force.Boundary.remesh">(goo.force.Boundary method)</a>
 </li>
+        </ul></li>
         <li><a href="user_guide/goo.utils.html#goo.utils.RemeshConstructor">RemeshConstructor (class in goo.utils)</a>
 </li>
         <li><a href="user_guide/goo.handler.html#goo.handler.RemeshHandler">RemeshHandler (class in goo.handler)</a>
@@ -963,14 +1000,14 @@
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.CellPattern.retrieve_cell">retrieve_cell() (goo.cell.CellPattern method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.gene.html#goo.gene.CircuitEngine.retrieve_concs">retrieve_concs() (goo.gene.CircuitEngine method)</a>
 
         <ul>
           <li><a href="user_guide/goo.gene.html#goo.gene.RoadRunnerEngine.retrieve_concs">(goo.gene.RoadRunnerEngine method)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.gene.html#goo.gene.RoadRunnerEngine">RoadRunnerEngine (class in goo.gene)</a>
 </li>
         <li><a href="user_guide/goo.division.html#goo.division.DivisionHandler.run">run() (goo.division.DivisionHandler method)</a>
@@ -980,15 +1017,19 @@
 </li>
           <li><a href="user_guide/goo.division.html#goo.division.TimeDivisionHandler.run">(goo.division.TimeDivisionHandler method)</a>
 </li>
+          <li><a href="user_guide/goo.handler.html#goo.handler.BoundaryHandler.run">(goo.handler.BoundaryHandler method)</a>
+</li>
           <li><a href="user_guide/goo.handler.html#goo.handler.ColorizeHandler.run">(goo.handler.ColorizeHandler method)</a>
 </li>
-          <li><a href="user_guide/goo.handler.html#goo.handler.DataExporter.run">(goo.handler.DataExporter method)</a>
+          <li><a href="user_guide/goo.handler.html#goo.handler.ConcentrationVisualizationHandler.run">(goo.handler.ConcentrationVisualizationHandler method)</a>
 </li>
-          <li><a href="user_guide/goo.handler.html#goo.handler.DiffusionHandler.run">(goo.handler.DiffusionHandler method)</a>
+          <li><a href="user_guide/goo.handler.html#goo.handler.DataExporter.run">(goo.handler.DataExporter method)</a>
 </li>
           <li><a href="user_guide/goo.handler.html#goo.handler.GrowthPIDHandler.run">(goo.handler.GrowthPIDHandler method)</a>
 </li>
           <li><a href="user_guide/goo.handler.html#goo.handler.Handler.run">(goo.handler.Handler method)</a>
+</li>
+          <li><a href="user_guide/goo.handler.html#goo.handler.MolecularHandler.run">(goo.handler.MolecularHandler method)</a>
 </li>
           <li><a href="user_guide/goo.handler.html#goo.handler.NetworkHandler.run">(goo.handler.NetworkHandler method)</a>
 </li>
@@ -999,6 +1040,8 @@
           <li><a href="user_guide/goo.handler.html#goo.handler.RemeshHandler.run">(goo.handler.RemeshHandler method)</a>
 </li>
           <li><a href="user_guide/goo.handler.html#goo.handler.SliceExporter.run">(goo.handler.SliceExporter method)</a>
+</li>
+          <li><a href="user_guide/goo.handler.html#goo.handler.StabilityHandler.run">(goo.handler.StabilityHandler method)</a>
 </li>
           <li><a href="user_guide/goo.handler.html#goo.handler.StopHandler.run">(goo.handler.StopHandler method)</a>
 </li>
@@ -1025,7 +1068,9 @@
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.sav_ratio">sav_ratio() (goo.cell.Cell method)</a>
 </li>
-        <li><a href="user_guide/goo.handler.html#goo.handler.save_tiff">save_tiff() (in module goo.handler)</a>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.secrete">secrete() (goo.cell.Cell method)</a>
+</li>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.sense">sense() (goo.cell.Cell method)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.CellType.set_hetero_adhesion_strength">set_hetero_adhesion_strength() (goo.cell.CellType method)</a>
 </li>
@@ -1046,16 +1091,22 @@
 </li>
           <li><a href="user_guide/goo.division.html#goo.division.TimeDivisionHandler.setup">(goo.division.TimeDivisionHandler method)</a>
 </li>
-          <li><a href="user_guide/goo.handler.html#goo.handler.DataExporter.setup">(goo.handler.DataExporter method)</a>
+          <li><a href="user_guide/goo.handler.html#goo.handler.ConcentrationVisualizationHandler.setup">(goo.handler.ConcentrationVisualizationHandler method)</a>
 </li>
-          <li><a href="user_guide/goo.handler.html#goo.handler.DiffusionHandler.setup">(goo.handler.DiffusionHandler method)</a>
+          <li><a href="user_guide/goo.handler.html#goo.handler.DataExporter.setup">(goo.handler.DataExporter method)</a>
 </li>
           <li><a href="user_guide/goo.handler.html#goo.handler.Handler.setup">(goo.handler.Handler method)</a>
 </li>
+          <li><a href="user_guide/goo.handler.html#goo.handler.MolecularHandler.setup">(goo.handler.MolecularHandler method)</a>
+</li>
         </ul></li>
-        <li><a href="user_guide/goo.utils.html#goo.utils.BoundaryCollisionConstructor.setup_mod">setup_mod() (goo.utils.BoundaryCollisionConstructor method)</a>
+        <li><a href="user_guide/goo.utils.html#goo.utils.BoundaryClothConstructor.setup_mod">setup_mod() (goo.utils.BoundaryClothConstructor method)</a>
 
         <ul>
+          <li><a href="user_guide/goo.utils.html#goo.utils.BoundaryCollisionConstructor.setup_mod">(goo.utils.BoundaryCollisionConstructor method)</a>
+</li>
+          <li><a href="user_guide/goo.utils.html#goo.utils.BoundarySubsurfConstructor.setup_mod">(goo.utils.BoundarySubsurfConstructor method)</a>
+</li>
           <li><a href="user_guide/goo.utils.html#goo.utils.ClothConstructor.setup_mod">(goo.utils.ClothConstructor method)</a>
 </li>
           <li><a href="user_guide/goo.utils.html#goo.utils.CollisionConstructor.setup_mod">(goo.utils.CollisionConstructor method)</a>
@@ -1102,6 +1153,8 @@
         <li><a href="user_guide/goo.handler.html#goo.handler.SliceExporter">SliceExporter (class in goo.handler)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.sphericity">sphericity() (goo.cell.Cell method)</a>
+</li>
+        <li><a href="user_guide/goo.handler.html#goo.handler.StabilityHandler">StabilityHandler (class in goo.handler)</a>
 </li>
         <li><a href="user_guide/goo.cell.html#goo.cell.StandardPattern">StandardPattern (class in goo.cell)</a>
 </li>
@@ -1183,11 +1236,13 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.handler.html#goo.handler.ForceDist.UNIFORM">UNIFORM (goo.handler.ForceDist attribute)</a>
 </li>
-        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.update_concentration">update_concentration() (goo.molecule.DiffusionSystem method)</a>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.update_concentrations_around_sphere">update_concentrations_around_sphere() (goo.molecule.DiffusionSystem method)</a>
 </li>
         <li><a href="user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_concs">update_concs() (goo.gene.GeneRegulatoryNetwork method)</a>
 </li>
-        <li><a href="user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_metabolite_concs">update_metabolite_concs() (goo.gene.GeneRegulatoryNetwork method)</a>
+        <li><a href="user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_gene_concs">update_gene_concs() (goo.gene.GeneRegulatoryNetwork method)</a>
+</li>
+        <li><a href="user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.update_molecule_concentration">update_molecule_concentration() (goo.molecule.DiffusionSystem method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
@@ -1199,7 +1254,11 @@
           <li><a href="user_guide/goo.division.html#goo.division.TimeDivisionHandler.update_on_divide">(goo.division.TimeDivisionHandler method)</a>
 </li>
         </ul></li>
-        <li><a href="user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_signaling_concs">update_signaling_concs() (goo.gene.GeneRegulatoryNetwork method)</a>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.update_physics_with_grn">update_physics_with_grn() (goo.cell.Cell method)</a>
+</li>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.update_physics_with_molecules">update_physics_with_molecules() (goo.cell.Cell method)</a>
+</li>
+        <li><a href="user_guide/goo.force.html#goo.force.Boundary.update_volume">update_volume() (goo.force.Boundary method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1211,6 +1270,8 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.vertices">vertices() (goo.cell.Cell method)</a>
 </li>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.viscosity">viscosity (goo.cell.Cell property)</a>
+</li>
         <li><a href="user_guide/goo.handler.html#goo.handler.Colorizer.VOLUME">VOLUME (goo.handler.Colorizer attribute)</a>
 </li>
     </ul></td>
@@ -1218,6 +1279,8 @@
         <li><a href="user_guide/goo.cell.html#goo.cell.Cell.volume">volume() (goo.cell.Cell method)</a>
 </li>
         <li><a href="user_guide/goo.handler.html#goo.handler.DataFlag.VOLUMES">VOLUMES (goo.handler.DataFlag attribute)</a>
+</li>
+        <li><a href="user_guide/goo.cell.html#goo.cell.Cell.voxel_size">voxel_size (goo.cell.Cell property)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -1295,7 +1358,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1315,7 +1378,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="_static/documentation_options.js?v=fb4688e9"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

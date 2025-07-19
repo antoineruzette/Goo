@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.molecule - Goo documentation</title>
+        <title>goo.molecule - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.division.html">goo.division</a></li>
@@ -262,13 +263,9 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for goo.molecule</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">override</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="kn">import</span> <span class="n">laplace</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">solve_ivp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">KDTree</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">goo.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
@@ -287,16 +284,31 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conc</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">D</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gradient</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">conc</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">D</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gradient</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">D</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">conc</span> <span class="o">=</span> <span class="n">conc</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gradient</span> <span class="o">=</span> <span class="n">gradient</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_D</span> <span class="o">=</span> <span class="n">D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_molecule_conc</span> <span class="o">=</span> <span class="n">conc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gradient</span> <span class="o">=</span> <span class="n">gradient</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_D</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">conc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_molecule_conc</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gradient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradient</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Molecule(concentration=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">conc</span><span class="si">}</span><span class="s2">&quot;</span> <span class="sa">f</span><span class="s2">&quot;diffusion_rate=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="si">}</span><span class="s2">)&quot;</span>
-        <span class="k">return</span> <span class="nb">str</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Molecule(concentration=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">molecule_conc</span><span class="si">}</span><span class="s2">, diffusion_rate=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
@@ -327,8 +339,8 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">molecules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Molecule</span><span class="p">],</span>
-        <span class="n">grid_size</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
-        <span class="n">grid_center</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">grid_size</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span>
+        <span class="n">grid_center</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
         <span class="n">time_step</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
         <span class="n">total_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">element_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
@@ -350,7 +362,7 @@
         <span class="n">xgrid</span><span class="p">,</span> <span class="n">ygrid</span><span class="p">,</span> <span class="n">zgrid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid_size</span>
         <span class="n">xlim</span><span class="p">,</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">zlim</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_size</span>
 
-        <span class="c1"># Create x, y, z coordinates centered around 0 </span>
+        <span class="c1"># Create x, y, z coordinates centered around 0</span>
         <span class="c1"># with specified range and space between grid points.</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span>
             <span class="o">-</span><span class="n">xlim</span> <span class="p">:</span> <span class="n">xlim</span> <span class="p">:</span> <span class="nb">complex</span><span class="p">(</span><span class="n">xgrid</span><span class="p">),</span>
@@ -410,79 +422,111 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">grid_center</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
                 <span class="o">+</span> <span class="n">offset</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid_size</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_size</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
             <span class="p">)</span>
-            <span class="n">bpy</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">empty_add</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;PLAIN_AXES&quot;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">corner_position</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+                <span class="n">bpy</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">empty_add</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;PLAIN_AXES&quot;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">corner_position</span><span class="p">)</span>
+                <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">active_object</span><span class="p">[</span><span class="s2">&quot;mol_concentration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_molecule_concentration</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">corner_position</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_tree</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_nearest_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the nearest grid index for the given point.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the nearest voxel index for the given point.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_tree</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">point</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-<div class="viewcode-block" id="DiffusionSystem.update_concentration">
-<a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.update_concentration">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add molecule value to a certain point at a given voxel in the grid.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DiffusionSystem.update_molecule_concentration">
+<a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.update_molecule_concentration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_molecule_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a value to a molecule concentration</span>
+<span class="sd">        at a certain point that is converted to the nearesrt voxel in the grid.&quot;&quot;&quot;</span>
         <span class="c1"># Convert flat index to 3D index</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nearest_idx</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
+        <span class="k">return</span></div>
 
 
-<div class="viewcode-block" id="DiffusionSystem.get_concentration">
-<a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_concentration">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add molecule value to a certain point at a given voxel in the grid.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="DiffusionSystem.get_molecule_concentration">
+<a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_molecule_concentration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_molecule_concentration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the concentration of a molecule at a certain point.&quot;&quot;&quot;</span>
         <span class="c1"># Convert flat index to 3D index</span>
         <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nearest_idx</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">idx</span><span class="p">]</span></div>
 
 
+<div class="viewcode-block" id="DiffusionSystem.get_total_ball_concentrations">
+<a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_total_ball_concentrations">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_total_ball_concentrations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns total concentration of a molecule within a sphere.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mol: Molecule to get concentration for</span>
+<span class="sd">            center: Coordinates of sphere center</span>
+<span class="sd">            radius: Radius of sphere</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: Total concentration of the molecule within the sphere</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idxs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_tree</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+        <span class="n">total_conc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">idxs</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">mol</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">total_conc</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="DiffusionSystem.get_ball_concentrations">
 <a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_ball_concentrations">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_ball_concentrations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get concentrations of all molecules in a sphere </span>
-<span class="sd">        with given center and radius.&quot;&quot;&quot;</span>
-        <span class="n">idxs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_tree</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
-        <span class="n">signaling_concs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">mol</span><span class="p">,</span> <span class="n">grid_concs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">signaling_concs</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grid_concs</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">idxs</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">signaling_concs</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ball_concentrations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the coordinates and concentrations of a molecule</span>
+<span class="sd">        of all the voxels within a sphere.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            mol: Molecule to get concentrations for</span>
+<span class="sd">            center: Coordinates of sphere center</span>
+<span class="sd">            radius: Radius of sphere</span>
 
-<div class="viewcode-block" id="DiffusionSystem.get_coords_concentrations">
-<a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.get_coords_concentrations">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_coords_concentrations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of coordinates and a list of molecule </span>
-<span class="sd">        concentration for each coordinate.&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: (coordinates array, concentrations array) for points within sphere</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">idxs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_tree</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
         <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_tree</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idxs</span><span class="p">]</span>
         <span class="n">concs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">idxs</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">coords</span><span class="p">,</span> <span class="n">concs</span></div>
 
 
+<div class="viewcode-block" id="DiffusionSystem.update_concentrations_around_sphere">
+<a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.update_concentrations_around_sphere">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_concentrations_around_sphere</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a value to a molecule concentration</span>
+<span class="sd">        at a certain point that is converted to the nearesrt voxel in the grid.&quot;&quot;&quot;</span>
+        <span class="c1"># Convert flat index to 3D index</span>
+        <span class="n">idxs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kd_tree</span><span class="o">.</span><span class="n">query_ball_point</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="n">idxs</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
+        <span class="k">return</span></div>
+
+
 <div class="viewcode-block" id="DiffusionSystem.diffuse">
 <a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.diffuse">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">diffuse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diffuse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="n">Molecule</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Simulate the diffusion of molecules in the grid</span>
 <span class="sd">        using the Laplace operator.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
-            <span class="n">conc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span>
-            <span class="n">laplacian</span> <span class="o">=</span> <span class="n">laplace</span><span class="p">(</span><span class="n">conc</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wrap&quot;</span><span class="p">)</span>
-            <span class="n">diff_coeff</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">D</span>
-            <span class="n">conc</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">*</span> <span class="n">diff_coeff</span> <span class="o">*</span> <span class="n">laplacian</span>
-            <span class="n">conc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">conc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span> <span class="o">=</span> <span class="n">conc</span></div>
+        <span class="n">conc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span>
+        <span class="n">laplacian</span> <span class="o">=</span> <span class="n">laplace</span><span class="p">(</span><span class="n">conc</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wrap&quot;</span><span class="p">)</span>
+        <span class="n">diff_coeff</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">D</span>
+        <span class="n">conc</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span> <span class="o">*</span> <span class="n">diff_coeff</span> <span class="o">*</span> <span class="n">laplacian</span>
+        <span class="n">conc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">conc</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid_concentrations</span><span class="p">[</span><span class="n">mol</span><span class="p">]</span> <span class="o">=</span> <span class="n">conc</span>
+        <span class="k">return</span></div>
 
 
 <div class="viewcode-block" id="DiffusionSystem.simulate_diffusion">
 <a class="viewcode-back" href="../../user_guide/goo.molecule.html#goo.molecule.DiffusionSystem.simulate_diffusion">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">simulate_diffusion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">simulate_diffusion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="n">Molecule</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Simulate the diffusion of molecules in the grid.&quot;&quot;&quot;</span>
         <span class="n">tot_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_time</span>
         <span class="n">t_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_step</span>
         <span class="n">num_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tot_time</span> <span class="o">/</span> <span class="n">t_step</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_steps</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">diffuse</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">diffuse</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="k">return</span></div>
 </div>
 
 </pre></div>
@@ -497,7 +541,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -517,7 +561,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

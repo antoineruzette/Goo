@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="goo.force" href="goo.force.html" /><link rel="prev" title="goo.cell" href="goo.cell.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.division - Goo documentation</title>
+        <title>goo.division - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -205,6 +205,7 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">goo.division</a></li>
@@ -278,26 +279,32 @@
 <cite>bmesh.ops.bisect_plane</cite> to divide a cell along its major axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>margin</strong> (<em>float</em>) – Distance of margin between divided cells.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>margin</strong> (<em>float</em>) – Distance of margin between divided cells.</p></li>
+<li><p><strong>to_flush</strong> (<em>list</em><em>[</em><em>tuple</em><em>[</em><em>bmesh.types.BMesh</em><em>, </em><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a><em>]</em><em>]</em>) – List of bmesh objects and cells to flush.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.BisectDivisionLogic.flush">
 <span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#BisectDivisionLogic.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.BisectDivisionLogic.flush" title="Link to this definition">¶</a></dt>
-<dd><p>Finish performing all stored divisions.</p>
+<dd><p>Flush the bmesh objects and cells from the division logic.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.BisectDivisionLogic.make_divide">
-<span class="sig-name descname"><span class="pre">make_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mother</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#BisectDivisionLogic.make_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.BisectDivisionLogic.make_divide" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">make_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mother</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/goo/division.html#BisectDivisionLogic.make_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.BisectDivisionLogic.make_divide" title="Link to this definition">¶</a></dt>
 <dd><p>Divide a mother cell into two daughter cells.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>mother</strong> – The mother cell to divide.</p>
+<dd class="field-odd"><p><strong>mother</strong> (<a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>) – The mother cell to divide.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A tuple containing the two daughter cells that will result from the
 division.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[<a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>, <a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>]</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -316,6 +323,9 @@ not interfere with each other.</p>
 <dd><p>Bases: <a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><code class="xref py py-class docutils literal notranslate"><span class="pre">DivisionLogic</span></code></a></p>
 <p>Division logic that creates a plane of division and applies the Boolean
 modifier to create a division.</p>
+<p>Boolean division is depreciated and will be removed in the future. The reason behind this is that
+it is not possible to apply the Boolean modifier to a cell with physics enabled; therefore leads
+to instability and simulation failure.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.BooleanDivisionLogic.flush">
 <span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#BooleanDivisionLogic.flush"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.BooleanDivisionLogic.flush" title="Link to this definition">¶</a></dt>
@@ -324,7 +334,7 @@ modifier to create a division.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.BooleanDivisionLogic.make_divide">
-<span class="sig-name descname"><span class="pre">make_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mother</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#BooleanDivisionLogic.make_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.BooleanDivisionLogic.make_divide" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">make_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mother</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/goo/division.html#BooleanDivisionLogic.make_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.BooleanDivisionLogic.make_divide" title="Link to this definition">¶</a></dt>
 <dd><p>Divide a mother cell into two daughter cells.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -333,6 +343,9 @@ modifier to create a division.</p>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A tuple containing the two daughter cells that will result from the
 division.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[<a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>, <a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>]</p>
 </dd>
 </dl>
 <div class="admonition note">
@@ -347,7 +360,7 @@ not interfere with each other.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="goo.division.DivisionHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.division.</span></span><span class="sig-name descname"><span class="pre">DivisionHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">division_logic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#DivisionHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.DivisionHandler" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.division.</span></span><span class="sig-name descname"><span class="pre">DivisionHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">division_logic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><span class="pre">DivisionLogic</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#DivisionHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.DivisionHandler" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="goo.handler.html#goo.handler.Handler" title="goo.handler.Handler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Handler</span></code></a></p>
 <p>Handler for managing cell division processes.</p>
 <p>This handler is responsible for managing the division of cells based on the
@@ -355,8 +368,19 @@ provided division logic. It determines which cells are eligible for division
 and performs the division process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>division_logic</strong> (<a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><em>DivisionLogic</em></a>) – The division logic used to execute cell
-division.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>division_logic</strong> (<a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><em>DivisionLogic</em></a>) – The division logic used to execute cell
+division.</p></li>
+<li><p><strong>mu</strong> (<em>float</em>) – Mean metric for determining cell division.</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>) – Standard deviation of the metric for determining cell division.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>division_logic</strong> (<a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><em>DivisionLogic</em></a>)</p></li>
+<li><p><strong>mu</strong> (<em>float</em>)</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>)</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
@@ -386,8 +410,8 @@ upon specified events (e.g. post-frame change).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scene</strong> – The Blender scene.</p></li>
-<li><p><strong>depsgraph</strong> – The dependency graph.</p></li>
+<li><p><strong>scene</strong> (<em>bpy.types.Scene</em>) – The Blender scene.</p></li>
+<li><p><strong>depsgraph</strong> (<em>bpy.types.Depsgraph</em>) – The dependency graph.</p></li>
 </ul>
 </dd>
 </dl>
@@ -395,16 +419,21 @@ upon specified events (e.g. post-frame change).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.DivisionHandler.setup">
-<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">get_cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_diffsystems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><span class="pre">DiffusionSystem</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#DivisionHandler.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.DivisionHandler.setup" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">get_cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_diffsystems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><span class="pre">DiffusionSystem</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/division.html#DivisionHandler.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.DivisionHandler.setup" title="Link to this definition">¶</a></dt>
 <dd><p>Set up the handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>get_cells</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>list</em><em>[</em><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a><em>]</em><em>]</em>) – A function that, when called,
 retrieves the list of cells that may divide.</p></li>
+<li><p><strong>get_diffsystem</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><em>DiffusionSystem</em></a><em>]</em>) – A function that, when called,
+retrieves the diffusion system.</p></li>
 <li><p><strong>dt</strong> (<em>float</em>) – The time step for the simulation.</p></li>
 <li><p><strong>get_diffsystems</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>list</em><em>[</em><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><em>DiffusionSystem</em></a><em>]</em><em>]</em>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -463,7 +492,7 @@ not interfere with each other.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="goo.division.SizeDivisionHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.division.</span></span><span class="sig-name descname"><span class="pre">SizeDivisionHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">division_logic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#SizeDivisionHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.SizeDivisionHandler" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.division.</span></span><span class="sig-name descname"><span class="pre">SizeDivisionHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">division_logic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><span class="pre">DivisionLogic</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">one_division_only</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#SizeDivisionHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.SizeDivisionHandler" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#goo.division.DivisionHandler" title="goo.division.DivisionHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">DivisionHandler</span></code></a></p>
 <p>Division handler that determines eligibility based on
 size of cell.</p>
@@ -472,12 +501,21 @@ size of cell.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>division_logic</strong> (<a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><em>DivisionLogic</em></a>) – see base class.</p></li>
 <li><p><strong>threshold</strong> (<em>float</em>) – minimum size of cell able to divide.</p></li>
+<li><p><strong>one_division_only</strong> (<em>bool</em>) – if True, cells will only divide once and never again.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>division_logic</strong> (<a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><em>DivisionLogic</em></a>)</p></li>
+<li><p><strong>mu</strong> (<em>float</em>)</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>)</p></li>
+<li><p><strong>one_division_only</strong> (<em>bool</em>)</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.SizeDivisionHandler.can_divide">
-<span class="sig-name descname"><span class="pre">can_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#SizeDivisionHandler.can_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.SizeDivisionHandler.can_divide" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">can_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/goo/division.html#SizeDivisionHandler.can_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.SizeDivisionHandler.can_divide" title="Link to this definition">¶</a></dt>
 <dd><p>Check if a cell is eligible for division.</p>
 <p>This method must be implemented by all subclasses.</p>
 <dl class="field-list simple">
@@ -486,6 +524,9 @@ size of cell.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if the cell can divide, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -499,8 +540,8 @@ upon specified events (e.g. post-frame change).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scene</strong> – The Blender scene.</p></li>
-<li><p><strong>depsgraph</strong> – The dependency graph.</p></li>
+<li><p><strong>scene</strong> (<em>bpy.types.Scene</em>) – The Blender scene.</p></li>
+<li><p><strong>depsgraph</strong> (<em>bpy.types.Depsgraph</em>) – The dependency graph.</p></li>
 </ul>
 </dd>
 </dl>
@@ -508,29 +549,36 @@ upon specified events (e.g. post-frame change).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.SizeDivisionHandler.setup">
-<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">get_cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_diffsystems</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><span class="pre">DiffusionSystem</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#goo.division.SizeDivisionHandler.setup" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">get_cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_diffsystem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><span class="pre">DiffusionSystem</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/division.html#SizeDivisionHandler.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.SizeDivisionHandler.setup" title="Link to this definition">¶</a></dt>
 <dd><p>Set up the handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>get_cells</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>list</em><em>[</em><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a><em>]</em><em>]</em>) – A function that, when called,
 retrieves the list of cells that may divide.</p></li>
+<li><p><strong>get_diffsystem</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><em>DiffusionSystem</em></a><em>]</em>) – A function that, when called,
+retrieves the diffusion system.</p></li>
 <li><p><strong>dt</strong> (<em>float</em>) – The time step for the simulation.</p></li>
-<li><p><strong>get_diffsystems</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>list</em><em>[</em><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><em>DiffusionSystem</em></a><em>]</em><em>]</em>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.SizeDivisionHandler.update_on_divide">
-<span class="sig-name descname"><span class="pre">update_on_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#SizeDivisionHandler.update_on_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.SizeDivisionHandler.update_on_divide" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">update_on_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/division.html#SizeDivisionHandler.update_on_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.SizeDivisionHandler.update_on_divide" title="Link to this definition">¶</a></dt>
 <dd><p>Perform updates after a cell has divided.</p>
 <p>This method can be overridden by subclasses to perform additional updates
 (e.g. set a property) after a cell has divided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cell</strong> (<a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>) – The cell that has divided.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -539,7 +587,7 @@ retrieves the list of cells that may divide.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="goo.division.TimeDivisionHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.division.</span></span><span class="sig-name descname"><span class="pre">TimeDivisionHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">division_logic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.division.</span></span><span class="sig-name descname"><span class="pre">TimeDivisionHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">division_logic</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><span class="pre">DivisionLogic</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#goo.division.DivisionHandler" title="goo.division.DivisionHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">DivisionHandler</span></code></a></p>
 <p>Division handler that determines eligibility based on
 time from last divsion.</p>
@@ -551,10 +599,17 @@ time from last divsion.</p>
 <li><p><strong>var</strong> (<em>float</em>) – Variance in the time interval.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>division_logic</strong> (<a class="reference internal" href="#goo.division.DivisionLogic" title="goo.division.DivisionLogic"><em>DivisionLogic</em></a>)</p></li>
+<li><p><strong>mu</strong> (<em>float</em>)</p></li>
+<li><p><strong>sigma</strong> (<em>float</em>)</p></li>
+</ul>
+</dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.TimeDivisionHandler.can_divide">
-<span class="sig-name descname"><span class="pre">can_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler.can_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler.can_divide" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">can_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler.can_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler.can_divide" title="Link to this definition">¶</a></dt>
 <dd><p>Check if a cell is eligible for division.</p>
 <p>This method must be implemented by all subclasses.</p>
 <dl class="field-list simple">
@@ -563,6 +618,9 @@ time from last divsion.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if the cell can divide, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -576,8 +634,8 @@ upon specified events (e.g. post-frame change).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>scene</strong> – The Blender scene.</p></li>
-<li><p><strong>depsgraph</strong> – The dependency graph.</p></li>
+<li><p><strong>scene</strong> (<em>bpy.types.Scene</em>) – The Blender scene.</p></li>
+<li><p><strong>depsgraph</strong> (<em>bpy.types.Depsgraph</em>) – The dependency graph.</p></li>
 </ul>
 </dd>
 </dl>
@@ -585,28 +643,36 @@ upon specified events (e.g. post-frame change).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.TimeDivisionHandler.setup">
-<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">get_cells</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_diffsystem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler.setup" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">get_cells</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_diffsystem</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><span class="pre">DiffusionSystem</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler.setup" title="Link to this definition">¶</a></dt>
 <dd><p>Set up the handler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>get_cells</strong> – A function that, when called,
+<li><p><strong>get_cells</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><em>list</em><em>[</em><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a><em>]</em><em>]</em>) – A function that, when called,
 retrieves the list of cells that may divide.</p></li>
-<li><p><strong>dt</strong> – The time step for the simulation.</p></li>
+<li><p><strong>get_diffsystem</strong> (<em>Callable</em><em>[</em><em>[</em><em>]</em><em>, </em><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><em>DiffusionSystem</em></a><em>]</em>) – A function that, when called,
+retrieves the diffusion system.</p></li>
+<li><p><strong>dt</strong> (<em>float</em>) – The time step for the simulation.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.division.TimeDivisionHandler.update_on_divide">
-<span class="sig-name descname"><span class="pre">update_on_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler.update_on_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler.update_on_divide" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">update_on_divide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/division.html#TimeDivisionHandler.update_on_divide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.division.TimeDivisionHandler.update_on_divide" title="Link to this definition">¶</a></dt>
 <dd><p>Perform updates after a cell has divided.</p>
 <p>This method can be overridden by subclasses to perform additional updates
 (e.g. set a property) after a cell has divided.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cell</strong> (<a class="reference internal" href="goo.cell.html#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>) – The cell that has divided.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -644,7 +710,7 @@ retrieves the list of cells that may divide.</p></li>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -718,7 +784,7 @@ retrieves the list of cells that may divide.</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

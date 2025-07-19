@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="goo.gene" href="goo.gene.html" /><link rel="prev" title="goo.growth" href="goo.growth.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.molecule - Goo documentation</title>
+        <title>goo.molecule - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -205,6 +205,7 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="goo.division.html">goo.division</a></li>
@@ -272,7 +273,7 @@
 <span id="goo-molecule"></span><h1>goo.molecule<a class="headerlink" href="#module-goo.molecule" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="goo.molecule.DiffusionSystem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.molecule.</span></span><span class="sig-name descname"><span class="pre">DiffusionSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(50,</span> <span class="pre">50,</span> <span class="pre">50)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.5,</span> <span class="pre">0.5)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.molecule.</span></span><span class="sig-name descname"><span class="pre">DiffusionSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecules</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(50,</span> <span class="pre">50,</span> <span class="pre">50)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">element_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">0.5,</span> <span class="pre">0.5)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A diffusion system that simulates the diffusion of molecules in a 3D grid.
 It also handles the secretion and sensing of molecular signals by cells.</p>
@@ -296,41 +297,88 @@ It also handles the secretion and sensing of molecular signals by cells.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.diffuse">
-<span class="sig-name descname"><span class="pre">diffuse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.diffuse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.diffuse" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">diffuse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.diffuse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.diffuse" title="Link to this definition">¶</a></dt>
 <dd><p>Simulate the diffusion of molecules in the grid
 using the Laplace operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> (<a class="reference internal" href="#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.get_ball_concentrations">
-<span class="sig-name descname"><span class="pre">get_ball_concentrations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.get_ball_concentrations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.get_ball_concentrations" title="Link to this definition">¶</a></dt>
-<dd><p>Get concentrations of all molecules in a sphere
-with given center and radius.</p>
+<span class="sig-name descname"><span class="pre">get_ball_concentrations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.get_ball_concentrations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.get_ball_concentrations" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the coordinates and concentrations of a molecule
+of all the voxels within a sphere.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol</strong> – Molecule to get concentrations for</p></li>
+<li><p><strong>center</strong> – Coordinates of sphere center</p></li>
+<li><p><strong>radius</strong> – Radius of sphere</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(coordinates array, concentrations array) for points within sphere</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.get_concentration">
-<span class="sig-name descname"><span class="pre">get_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.get_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.get_concentration" title="Link to this definition">¶</a></dt>
-<dd><p>Add molecule value to a certain point at a given voxel in the grid.</p>
+<dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.get_molecule_concentration">
+<span class="sig-name descname"><span class="pre">get_molecule_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.get_molecule_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.get_molecule_concentration" title="Link to this definition">¶</a></dt>
+<dd><p>Get the concentration of a molecule at a certain point.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.get_coords_concentrations">
-<span class="sig-name descname"><span class="pre">get_coords_concentrations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.get_coords_concentrations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.get_coords_concentrations" title="Link to this definition">¶</a></dt>
-<dd><p>Get a list of coordinates and a list of molecule
-concentration for each coordinate.</p>
+<dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.get_total_ball_concentrations">
+<span class="sig-name descname"><span class="pre">get_total_ball_concentrations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.get_total_ball_concentrations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.get_total_ball_concentrations" title="Link to this definition">¶</a></dt>
+<dd><p>Returns total concentration of a molecule within a sphere.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mol</strong> – Molecule to get concentration for</p></li>
+<li><p><strong>center</strong> – Coordinates of sphere center</p></li>
+<li><p><strong>radius</strong> – Radius of sphere</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Total concentration of the molecule within the sphere</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.simulate_diffusion">
-<span class="sig-name descname"><span class="pre">simulate_diffusion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.simulate_diffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.simulate_diffusion" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">simulate_diffusion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.simulate_diffusion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.simulate_diffusion" title="Link to this definition">¶</a></dt>
 <dd><p>Simulate the diffusion of molecules in the grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> (<a class="reference internal" href="#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.update_concentration">
-<span class="sig-name descname"><span class="pre">update_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.update_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.update_concentration" title="Link to this definition">¶</a></dt>
-<dd><p>Add molecule value to a certain point at a given voxel in the grid.</p>
+<dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.update_concentrations_around_sphere">
+<span class="sig-name descname"><span class="pre">update_concentrations_around_sphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.update_concentrations_around_sphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.update_concentrations_around_sphere" title="Link to this definition">¶</a></dt>
+<dd><p>Add a value to a molecule concentration
+at a certain point that is converted to the nearesrt voxel in the grid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.molecule.DiffusionSystem.update_molecule_concentration">
+<span class="sig-name descname"><span class="pre">update_molecule_concentration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/molecule.html#DiffusionSystem.update_molecule_concentration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.molecule.DiffusionSystem.update_molecule_concentration" title="Link to this definition">¶</a></dt>
+<dd><p>Add a value to a molecule concentration
+at a certain point that is converted to the nearesrt voxel in the grid.</p>
 </dd></dl>
 
 </dd></dl>
@@ -350,6 +398,26 @@ concentration for each coordinate.</p>
 </ul>
 </dd>
 </dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.molecule.Molecule.D">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">D</span></span><a class="headerlink" href="#goo.molecule.Molecule.D" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.molecule.Molecule.conc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">conc</span></span><a class="headerlink" href="#goo.molecule.Molecule.conc" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.molecule.Molecule.gradient">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gradient</span></span><a class="headerlink" href="#goo.molecule.Molecule.gradient" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.molecule.Molecule.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#goo.molecule.Molecule.name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
@@ -383,7 +451,7 @@ concentration for each coordinate.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -414,13 +482,20 @@ concentration for each coordinate.</p>
 <li><a class="reference internal" href="#goo.molecule.DiffusionSystem.build_kdtree"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.build_kdtree()</span></code></a></li>
 <li><a class="reference internal" href="#goo.molecule.DiffusionSystem.diffuse"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.diffuse()</span></code></a></li>
 <li><a class="reference internal" href="#goo.molecule.DiffusionSystem.get_ball_concentrations"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.get_ball_concentrations()</span></code></a></li>
-<li><a class="reference internal" href="#goo.molecule.DiffusionSystem.get_concentration"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.get_concentration()</span></code></a></li>
-<li><a class="reference internal" href="#goo.molecule.DiffusionSystem.get_coords_concentrations"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.get_coords_concentrations()</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.DiffusionSystem.get_molecule_concentration"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.get_molecule_concentration()</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.DiffusionSystem.get_total_ball_concentrations"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.get_total_ball_concentrations()</span></code></a></li>
 <li><a class="reference internal" href="#goo.molecule.DiffusionSystem.simulate_diffusion"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.simulate_diffusion()</span></code></a></li>
-<li><a class="reference internal" href="#goo.molecule.DiffusionSystem.update_concentration"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.update_concentration()</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.DiffusionSystem.update_concentrations_around_sphere"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.update_concentrations_around_sphere()</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.DiffusionSystem.update_molecule_concentration"><code class="docutils literal notranslate"><span class="pre">DiffusionSystem.update_molecule_concentration()</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#goo.molecule.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.Molecule"><code class="docutils literal notranslate"><span class="pre">Molecule</span></code></a><ul>
+<li><a class="reference internal" href="#goo.molecule.Molecule.D"><code class="docutils literal notranslate"><span class="pre">Molecule.D</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.Molecule.conc"><code class="docutils literal notranslate"><span class="pre">Molecule.conc</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.Molecule.gradient"><code class="docutils literal notranslate"><span class="pre">Molecule.gradient</span></code></a></li>
+<li><a class="reference internal" href="#goo.molecule.Molecule.name"><code class="docutils literal notranslate"><span class="pre">Molecule.name</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -432,7 +507,7 @@ concentration for each coordinate.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

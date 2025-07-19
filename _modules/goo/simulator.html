@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.simulator - Goo documentation</title>
+        <title>goo.simulator - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.division.html">goo.division</a></li>
@@ -262,19 +263,19 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for goo.simulator</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">goo.handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Handler</span><span class="p">,</span> <span class="n">StopHandler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">goo.cell</span><span class="w"> </span><span class="kn">import</span> <span class="n">Cell</span><span class="p">,</span> <span class="n">CellType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">goo.handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Handler</span><span class="p">,</span> <span class="n">StopHandler</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">goo.molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionSystem</span>
+
 
 <span class="n">Render</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s2">&quot;Render&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;PNG&quot;</span><span class="p">,</span> <span class="s2">&quot;TIFF&quot;</span><span class="p">,</span> <span class="s2">&quot;MP4&quot;</span><span class="p">])</span>
 
@@ -289,17 +290,19 @@
 <span class="sd">        time (List[int]): Start and end frames.</span>
 <span class="sd">        physics_dt (int): Time step for physics simulation.</span>
 <span class="sd">        molecular_dt (int): Time step for molecular simulation.</span>
+<span class="sd">        max_cells (Optional[int]): Maximum number of cells to include in the simulation.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># TODO: determine diffsystem or diffsystems</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">celltypes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">CellType</span><span class="p">,</span> <span class="n">Cell</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="n">celltypes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CellType</span> <span class="o">|</span> <span class="n">Cell</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="n">diffsystems</span><span class="p">:</span> <span class="n">DiffusionSystem</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="n">time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
         <span class="n">physics_dt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">molecular_dt</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">max_cells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">celltypes</span> <span class="o">=</span> <span class="n">celltypes</span>
         <span class="c1"># takes first possible diffsystem</span>
@@ -310,6 +313,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">addons</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Removing add_mesh_extra_objects as it&#39;s causing issues in 4.5</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">render_format</span><span class="p">:</span> <span class="n">Render</span> <span class="o">=</span> <span class="n">Render</span><span class="o">.</span><span class="n">PNG</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_cells</span> <span class="o">=</span> <span class="n">max_cells</span>
 
         <span class="c1"># Set up simulation parameters for diffusion system</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffsystem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -338,12 +342,15 @@
         <span class="c1"># Set up simulation time interval</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_start</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
-        
+
+        <span class="c1"># Extend scene to handle physics beyond 250 frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extend_scene</span><span class="p">()</span>
+
         <span class="c1"># Configure Blender&#39;s logging to filter dependency messages</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">debug_depsgraph</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">debug_wm</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kc">False</span>
-        
+
         <span class="c1"># Set units to the metric system</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">unit_settings</span><span class="o">.</span><span class="n">system</span> <span class="o">=</span> <span class="s2">&quot;METRIC&quot;</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">unit_settings</span><span class="o">.</span><span class="n">scale_length</span> <span class="o">=</span> <span class="mf">1e-6</span>
@@ -352,6 +359,7 @@
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">unit_settings</span><span class="o">.</span><span class="n">mass_unit</span> <span class="o">=</span> <span class="s2">&quot;MILLIGRAMS&quot;</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">unit_settings</span><span class="o">.</span><span class="n">time_unit</span> <span class="o">=</span> <span class="s2">&quot;SECONDS&quot;</span>
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">unit_settings</span><span class="o">.</span><span class="n">temperature_unit</span> <span class="o">=</span> <span class="s2">&quot;CELSIUS&quot;</span>
+        <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">fps</span> <span class="o">=</span> <span class="mi">10</span>
 
         <span class="c1"># Turn off gravity</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">toggle_gravity</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
@@ -386,10 +394,7 @@
         <span class="n">links</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">node_background</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="s2">&quot;Background&quot;</span><span class="p">],</span> <span class="n">node_output</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="s2">&quot;Surface&quot;</span><span class="p">])</span>
 
         <span class="c1"># # set film to transparent to hide background</span>
-        <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">film_transparent</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="c1"># Allow cloth physics pass 250 frames</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">extend_scene</span><span class="p">()</span></div>
+        <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">film_transparent</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="Simulator.enable_addon">
@@ -417,7 +422,7 @@
 
 <div class="viewcode-block" id="Simulator.get_cells_func">
 <a class="viewcode-back" href="../../user_guide/goo.simulator.html#goo.simulator.Simulator.get_cells_func">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_cells_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">celltypes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cells_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">celltypes</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Cell</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a function that returns all cells in the simulation.&quot;&quot;&quot;</span>
         <span class="n">celltypes</span> <span class="o">=</span> <span class="n">celltypes</span> <span class="k">if</span> <span class="n">celltypes</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">celltypes</span>
 
@@ -429,11 +434,11 @@
 
 <div class="viewcode-block" id="Simulator.get_diffsystem_func">
 <a class="viewcode-back" href="../../user_guide/goo.simulator.html#goo.simulator.Simulator.get_diffsystem_func">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_diffsystem_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffsystem</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_diffsystem_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffsystem</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">DiffusionSystem</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a function that returns the diffusion system.&quot;&quot;&quot;</span>
         <span class="n">diffsystem</span> <span class="o">=</span> <span class="n">diffsystem</span> <span class="k">if</span> <span class="n">diffsystem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffsystem</span>
 
-        <span class="k">def</span><span class="w"> </span><span class="nf">get_diffsystem</span><span class="p">():</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">get_diffsystem</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">DiffusionSystem</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">diffsystem</span>
 
         <span class="k">return</span> <span class="n">get_diffsystem</span></div>
@@ -453,9 +458,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend the scene to allow cloth physics to pass the default 250 frames.&quot;&quot;&quot;</span>
         <span class="n">cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cells</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s1">&#39;cloth_mod&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cell</span><span class="o">.</span><span class="n">cloth_mod</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="p">,</span> <span class="s1">&#39;point_cache&#39;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="o">.</span><span class="n">point_cache</span><span class="o">.</span><span class="n">frame_end</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">:</span>
-                    <span class="n">cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="o">.</span><span class="n">point_cache</span><span class="o">.</span><span class="n">frame_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span></div>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s1">&#39;cloth_mod&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="p">:</span>
+                <span class="c1"># Update the point cache frame end</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="o">.</span><span class="n">point_cache</span><span class="o">.</span><span class="n">frame_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span></div>
 
 
 <div class="viewcode-block" id="Simulator.add_handler">
@@ -463,7 +468,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_handler</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">handler</span><span class="p">:</span> <span class="n">Handler</span><span class="p">,</span>
-        <span class="n">celltypes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CellType</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">celltypes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">CellType</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">diffsystem</span><span class="p">:</span> <span class="n">DiffusionSystem</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a handler to the simulation.&quot;&quot;&quot;</span>
@@ -480,76 +485,105 @@
 <a class="viewcode-back" href="../../user_guide/goo.simulator.html#goo.simulator.Simulator.add_handlers">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_handlers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handlers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Handler</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add multiple handlers to the simulation.&quot;&quot;&quot;</span>
-        <span class="c1"># always include a stop handler</span>
-        <span class="n">stop_handler</span> <span class="o">=</span> <span class="n">StopHandler</span><span class="p">()</span>
-        <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">frame_change_pre</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stop_handler</span><span class="o">.</span><span class="n">run</span><span class="p">)</span>
-        
+        <span class="c1"># Add stability handler first so it runs before other handlers</span>
+        <span class="c1"># stability_handler = StabilityHandler()</span>
+        <span class="c1"># stability_handler.setup(</span>
+        <span class="c1">#     self.get_cells_func(),</span>
+        <span class="c1">#     self.get_diffsystem_func(),</span>
+        <span class="c1">#     self.physics_dt,</span>
+        <span class="c1"># )</span>
+        <span class="c1"># bpy.app.handlers.frame_change_pre.append(stability_handler.run)</span>
+
+        <span class="c1"># Add all other handlers</span>
         <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+        <span class="c1"># Add stop handler last so it runs after other handlers</span>
+        <span class="n">stop_handler</span> <span class="o">=</span> <span class="n">StopHandler</span><span class="p">(</span><span class="n">max_cells</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">max_cells</span><span class="p">)</span>
+        <span class="n">stop_handler</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_cells_func</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_diffsystem_func</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">physics_dt</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">frame_change_pre</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stop_handler</span><span class="o">.</span><span class="n">run</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Simulator.render">
 <a class="viewcode-back" href="../../user_guide/goo.simulator.html#goo.simulator.Simulator.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">frames</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">range</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">frames</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="nb">range</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">camera</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="nb">format</span><span class="p">:</span> <span class="n">Render</span> <span class="o">=</span> <span class="n">Render</span><span class="o">.</span><span class="n">PNG</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Render the simulation in the background without</span>
-<span class="sd">        updating the 3D Viewport in real time.</span>
-<span class="sd">        If a camera is specified, the frames will be rendered with it,</span>
-<span class="sd">        otherwise the frames will be rendered in the 3D Viewport.</span>
-<span class="sd">        It will updated the scene at the end of the simulation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render specific frames of the simulation.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            start (int): Start frame.</span>
-<span class="sd">            end (int): End frame.</span>
-<span class="sd">            path (str): Path to save the frames.</span>
-<span class="sd">            camera (bool): Render with the camera.</span>
-<span class="sd">            format (Render): Render format: PNG (default), TIFF, MP4.</span>
+<span class="sd">            frames (list[int] | range | None): List of frames to render. If None, renders all frames.</span>
+<span class="sd">            path (str | None): Path to save rendered frames. If None, uses default path.</span>
+<span class="sd">            camera (bool): Whether to use camera view (True) or viewport (False).</span>
+<span class="sd">            format (Render): Format to save rendered frames in.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if rendering completed normally, False if it was stopped due to instability</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save path not provided. Falling back on default path.&quot;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">frames</span><span class="p">:</span>
+            <span class="n">frame_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
+            <span class="n">frame_list</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">frame_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Render</span><span class="o">.</span><span class="n">PNG</span><span class="p">:</span>
+            <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">image_settings</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="s2">&quot;PNG&quot;</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Render</span><span class="o">.</span><span class="n">TIFF</span><span class="p">:</span>
+            <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">image_settings</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="s2">&quot;TIFF&quot;</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Render</span><span class="o">.</span><span class="n">MP4</span><span class="p">:</span>
+            <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">image_settings</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="s2">&quot;FFMPEG&quot;</span>
+            <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">ffmpeg</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;MPEG4&quot;</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----- RENDERING... -----&quot;</span><span class="p">)</span>
-
-        <span class="n">render_format</span> <span class="o">=</span> <span class="nb">format</span> <span class="k">if</span> <span class="nb">format</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_format</span>
-        <span class="k">match</span> <span class="n">render_format</span><span class="p">:</span>
-            <span class="k">case</span> <span class="n">Render</span><span class="o">.</span><span class="n">PNG</span><span class="p">:</span>
-                <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">image_settings</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="s2">&quot;PNG&quot;</span>
-            <span class="k">case</span> <span class="n">Render</span><span class="o">.</span><span class="n">TIFF</span><span class="p">:</span>
-                <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">image_settings</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="s2">&quot;TIFF&quot;</span>
-            <span class="k">case</span> <span class="n">Render</span><span class="o">.</span><span class="n">MP4</span><span class="p">:</span>
-                <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">image_settings</span><span class="o">.</span><span class="n">file_format</span> <span class="o">=</span> <span class="s2">&quot;FFMPEG&quot;</span>
-                <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">ffmpeg</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="s2">&quot;MPEG4&quot;</span>
-
-        <span class="k">match</span> <span class="n">frames</span><span class="p">:</span>
-            <span class="k">case</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
-                <span class="n">frame_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-            <span class="k">case</span> <span class="nb">range</span><span class="p">():</span>
-                <span class="n">frame_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span>
-            <span class="k">case</span> <span class="nb">list</span><span class="p">():</span>
-                <span class="n">frame_list</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rendering to&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">frame_list</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
             <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_set</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Run pre-frame handlers and check for stop conditions</span>
+            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">frame_change_pre</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>  <span class="c1"># Check if it&#39;s callable</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="p">,</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evaluated_depsgraph_get</span><span class="p">())</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----- RENDERING STOPPED DUE TO INSTABILITY -----&quot;</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warning: Handler </span><span class="si">{</span><span class="n">handler</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Run post-frame handlers</span>
+            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">frame_change_post</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>  <span class="c1"># Check if it&#39;s callable</span>
+                        <span class="n">handler</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="p">,</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evaluated_depsgraph_get</span><span class="p">())</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warning: Handler </span><span class="si">{</span><span class="n">handler</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Only render if this frame is in our frame list</span>
             <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">frame_list</span><span class="p">:</span>
+                <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">camera</span><span class="p">:</span>
                     <span class="n">bpy</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">write_still</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">bpy</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">opengl</span><span class="p">(</span><span class="n">write_still</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">render</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">path</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----- RENDERING COMPLETED! -----&quot;</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----- RENDERING COMPLETED! -----&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="Simulator.render_animation">
@@ -582,16 +616,44 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_end</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the simulation in the background without</span>
-<span class="sd">        updating the 3D Viewport in real time. </span>
+<span class="sd">        updating the 3D Viewport in real time.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            end (int): End frame. Defaults to the last frame of the scene.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if simulation completed normally, False if it was stopped due to instability</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----- SIMULATION START -----&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
             <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_set</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----- SIMULATION END -----&quot;</span><span class="p">)</span></div>
+
+            <span class="c1"># Run pre-frame handlers and check for stop conditions</span>
+            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">frame_change_pre</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>  <span class="c1"># Check if it&#39;s callable</span>
+                        <span class="n">result</span> <span class="o">=</span> <span class="n">handler</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="p">,</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evaluated_depsgraph_get</span><span class="p">())</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">result</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----- SIMULATION STOPPED DUE TO INSTABILITY -----&quot;</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warning: Handler </span><span class="si">{</span><span class="n">handler</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Run post-frame handlers</span>
+            <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">bpy</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">frame_change_post</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">handler</span><span class="p">):</span>  <span class="c1"># Check if it&#39;s callable</span>
+                        <span class="n">handler</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="p">,</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">evaluated_depsgraph_get</span><span class="p">())</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Warning: Handler </span><span class="si">{</span><span class="n">handler</span><span class="si">}</span><span class="s2"> failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----- SIMULATION END -----&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Set frame back to 1 and stop animation</span>
+        <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_set</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">bpy</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">screen</span><span class="o">.</span><span class="n">animation_cancel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 </div>
 
 </pre></div>
@@ -606,7 +668,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -626,7 +688,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

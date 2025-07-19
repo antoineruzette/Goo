@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="goo.division" href="goo.division.html" /><link rel="prev" title="API documentation" href="api.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.cell - Goo documentation</title>
+        <title>goo.cell - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -205,6 +205,7 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current current-page"><a class="current reference internal" href="#">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="goo.division.html">goo.division</a></li>
@@ -283,7 +284,11 @@ motion is determined by an associated collection.</p>
 <dd class="field-odd"><p><strong>obj</strong> – Blender object to be used as the representation of the cell.</p>
 </dd>
 <dt class="field-even">Variables<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>celltype</strong> (<a class="reference internal" href="#goo.cell.CellType" title="goo.cell.CellType"><em>CellType</em></a>) – The cell type to which the cell belongs.</p>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>celltype</strong> (<a class="reference internal" href="#goo.cell.CellType" title="goo.cell.CellType"><em>CellType</em></a>) – The cell type to which the cell belongs.</p></li>
+<li><p><strong>homo_adhesion_strength</strong> (<em>float</em>) – The homotypic adhesion strength for this cell.
+If set, overrides the cell type’s default adhesion strength.</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
@@ -401,11 +406,10 @@ is enclosed by the surface area, calculated as .</p>
 <p>This function disables the physics simulation for the cell by storing the
 current modifier settings, removing all modifiers, and disabling any adhesion
 forces.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>RuntimeError</strong> – If physics is not enabled.</p>
-</dd>
-</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If physics is already disabled, this function will do nothing.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -428,6 +432,11 @@ and enabling any adhesion forces.</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.cell.Cell.gene_concs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gene_concs</span></span><a class="headerlink" href="#goo.cell.Cell.gene_concs" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.Cell.get_modifier">
 <span class="sig-name descname"><span class="pre">get_modifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Modifier</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/cell.html#Cell.get_modifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.get_modifier" title="Link to this definition">¶</a></dt>
@@ -446,11 +455,54 @@ underlying object representation of the cell.</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.cell.Cell.homo_adhesion_strength">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">homo_adhesion_strength</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#goo.cell.Cell.homo_adhesion_strength" title="Link to this definition">¶</a></dt>
+<dd><p>Get the homotypic adhesion strength for this cell.
+If not set, returns the cell type’s default adhesion strength.
+If cell type is not set, returns None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.cell.Cell.is_collapsed">
+<span class="sig-name descname"><span class="pre">is_collapsed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../_modules/goo/cell.html#Cell.is_collapsed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.is_collapsed" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the cell has collapsed or is in an invalid state.</p>
+<p>A cell is considered collapsed if:
+1. It has no vertices
+2. Its volume is zero or negative
+3. Its mesh is invalid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the cell is collapsed, False otherwise</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.Cell.link_gene_to_property">
-<span class="sig-name descname"><span class="pre">link_gene_to_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.link_gene_to_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.link_gene_to_property" title="Link to this definition">¶</a></dt>
-<dd><p>Link gene to property, so that changes in the gene will
-cause changes in the physical property.</p>
+<span class="sig-name descname"><span class="pre">link_gene_to_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><span class="pre">Gene</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.link_gene_to_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.link_gene_to_property" title="Link to this definition">¶</a></dt>
+<dd><p>Link gene to property, so that changes in the gene levels
+will cause changes in the physical property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gene</strong> (<a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><em>Gene</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.cell.Cell.link_molecule_to_property">
+<span class="sig-name descname"><span class="pre">link_molecule_to_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.link_molecule_to_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.link_molecule_to_property" title="Link to this definition">¶</a></dt>
+<dd><p>Link molecule to property, so that changes in the extracellular
+concentrations of the molecule will cause changes in the physical property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>molecule</strong> (<a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -469,11 +521,6 @@ cause changes in the physical property.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mat</span></span><a class="headerlink" href="#goo.cell.Cell.mat" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="goo.cell.Cell.metabolites">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metabolites</span></span><a class="headerlink" href="#goo.cell.Cell.metabolites" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.Cell.minor_axis">
 <span class="sig-name descname"><span class="pre">minor_axis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="goo.utils.html#goo.utils.Axis" title="goo.utils.Axis"><span class="pre">Axis</span></a></span></span><a class="reference internal" href="../_modules/goo/cell.html#Cell.minor_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.minor_axis" title="Link to this definition">¶</a></dt>
@@ -483,6 +530,12 @@ cause changes in the physical property.</p>
 <dd class="field-odd"><p><a class="reference internal" href="goo.utils.html#goo.utils.Axis" title="goo.utils.Axis"><em>Axis</em></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.cell.Cell.molecule_concs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">molecule_concs</span></span><a class="headerlink" href="#goo.cell.Cell.molecule_concs" title="Link to this definition">¶</a></dt>
+<dd><p>Get the concentrations of the molecules around the cell radius.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -550,7 +603,7 @@ nodes, it also updates the ‘Base Color’ input of any nodes that have it.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.Cell.remesh">
-<span class="sig-name descname"><span class="pre">remesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voxel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.45</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/cell.html#Cell.remesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.remesh" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">remesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voxel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/cell.html#Cell.remesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.remesh" title="Link to this definition">¶</a></dt>
 <dd><p>Remesh the underlying mesh representation of the cell.</p>
 <p>Remeshing is done using the built-in <cite>voxel_remesh()</cite>.</p>
 <dl class="field-list simple">
@@ -598,6 +651,28 @@ objects with a mesh data type.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="goo.cell.Cell.secrete">
+<span class="sig-name descname"><span class="pre">secrete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.secrete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.secrete" title="Link to this definition">¶</a></dt>
+<dd><p>Step the secretion of the cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> (<a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.cell.Cell.sense">
+<span class="sig-name descname"><span class="pre">sense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.sense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.sense" title="Link to this definition">¶</a></dt>
+<dd><p>Step the sensing of the cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> (<a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.Cell.sphericity">
 <span class="sig-name descname"><span class="pre">sphericity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/goo/cell.html#Cell.sphericity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.sphericity" title="Link to this definition">¶</a></dt>
 <dd><p>Calculates the sphericity of the cell.</p>
@@ -616,14 +691,9 @@ as the cell to the surface area of the cell.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.Cell.step_grn">
-<span class="sig-name descname"><span class="pre">step_grn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diffsys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><span class="pre">DiffusionSystem</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.step_grn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.step_grn" title="Link to this definition">¶</a></dt>
-<dd><p>Calculate and update the metabolite concentrations
+<span class="sig-name descname"><span class="pre">step_grn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.step_grn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.step_grn" title="Link to this definition">¶</a></dt>
+<dd><p>Calculate and update the gene concentrations
 of the gene regulatory network after 1 time step.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>diffsys</strong> (<a class="reference internal" href="goo.molecule.html#goo.molecule.DiffusionSystem" title="goo.molecule.DiffusionSystem"><em>DiffusionSystem</em></a><em> | </em><em>None</em>)</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -635,6 +705,22 @@ of the gene regulatory network after 1 time step.</p>
 <dt class="sig sig-object py" id="goo.cell.Cell.stiffness">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stiffness</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#goo.cell.Cell.stiffness" title="Link to this definition">¶</a></dt>
 <dd><p>Stiffness of the membrane of the cell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.cell.Cell.update_physics_with_grn">
+<span class="sig-name descname"><span class="pre">update_physics_with_grn</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.update_physics_with_grn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.update_physics_with_grn" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.cell.Cell.update_physics_with_molecules">
+<span class="sig-name descname"><span class="pre">update_physics_with_molecules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#Cell.update_physics_with_molecules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.update_physics_with_molecules" title="Link to this definition">¶</a></dt>
+<dd><p>Step the extracellular molecules of the cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mol</strong> (<a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -657,6 +743,11 @@ of the gene regulatory network after 1 time step.</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.cell.Cell.viscosity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">viscosity</span></span><a class="headerlink" href="#goo.cell.Cell.viscosity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.Cell.volume">
 <span class="sig-name descname"><span class="pre">volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/goo/cell.html#Cell.volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.Cell.volume" title="Link to this definition">¶</a></dt>
@@ -670,6 +761,11 @@ of the gene regulatory network after 1 time step.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.cell.Cell.voxel_size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">voxel_size</span></span><a class="headerlink" href="#goo.cell.Cell.voxel_size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -710,7 +806,7 @@ patterns in order to create new cells.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.CellPattern.build_network">
-<span class="sig-name descname"><span class="pre">build_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metabolites</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#CellPattern.build_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.CellPattern.build_network" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">build_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#CellPattern.build_network"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.CellPattern.build_network" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -720,37 +816,32 @@ patterns in order to create new cells.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.CellPattern.build_physics">
-<span class="sig-name descname"><span class="pre">build_physics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physics_constructor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#CellPattern.build_physics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.CellPattern.build_physics" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="goo.cell.CellPattern.circuits">
-<span class="sig-name descname"><span class="pre">circuits</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#goo.cell.CellPattern.circuits" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">build_physics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">physics_constructor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#CellPattern.build_physics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.CellPattern.build_physics" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>viscosity</strong> (<em>float</em>)</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.CellPattern.color">
-<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#goo.cell.CellPattern.color" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#goo.cell.CellPattern.color" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.CellPattern.initial_pressure">
-<span class="sig-name descname"><span class="pre">initial_pressure</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#goo.cell.CellPattern.initial_pressure" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">initial_pressure</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#goo.cell.CellPattern.initial_pressure" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.CellPattern.mesh_kwargs">
-<span class="sig-name descname"><span class="pre">mesh_kwargs</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#goo.cell.CellPattern.mesh_kwargs" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="goo.cell.CellPattern.metabolites">
-<span class="sig-name descname"><span class="pre">metabolites</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#goo.cell.CellPattern.metabolites" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mesh_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#goo.cell.CellPattern.mesh_kwargs" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.CellPattern.physics_constructor">
-<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#goo.cell.CellPattern.physics_constructor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><span class="pre">PhysicsConstructor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#goo.cell.CellPattern.physics_constructor" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -801,21 +892,23 @@ cells of this type.</p></li>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.cell.CellType.create_cell">
-<span class="sig-name descname"><span class="pre">create_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physics_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physics_constructor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><span class="pre">PhysicsConstructor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Growth</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Growth.LINEAR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genes_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.gene.html#goo.gene.Circuit" title="goo.gene.Circuit"><span class="pre">Circuit</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metabolites</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Object</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">mesh_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#CellType.create_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.CellType.create_cell" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">create_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voxel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">viscosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physics_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physics_constructor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><span class="pre">PhysicsConstructor</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Growth</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Growth.LINEAR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">growth_rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_volume</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genes_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.gene.html#goo.gene.Circuit" title="goo.gene.Circuit"><span class="pre">Circuit</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Object</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">mesh_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#CellType.create_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.CellType.create_cell" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>voxel_size</strong> (<em>float</em>)</p></li>
+<li><p><strong>viscosity</strong> (<em>float</em>)</p></li>
 <li><p><strong>color</strong> (<em>tuple</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>physics_enabled</strong> (<em>bool</em>)</p></li>
-<li><p><strong>physics_constructor</strong> (<a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><em>PhysicsConstructor</em></a><em> | </em><em>None</em>)</p></li>
+<li><p><strong>physics_constructor</strong> (<a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><em>PhysicsConstructor</em></a>)</p></li>
 <li><p><strong>growth_enabled</strong> (<em>bool</em>)</p></li>
 <li><p><strong>growth_type</strong> (<em>Growth</em>)</p></li>
 <li><p><strong>growth_rate</strong> (<em>float</em>)</p></li>
 <li><p><strong>target_volume</strong> (<em>float</em><em> | </em><em>None</em>)</p></li>
 <li><p><strong>genes_enabled</strong> (<em>bool</em>)</p></li>
 <li><p><strong>circuits</strong> (<em>list</em><em>[</em><a class="reference internal" href="goo.gene.html#goo.gene.Circuit" title="goo.gene.Circuit"><em>Circuit</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
-<li><p><strong>metabolites</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>)</p></li>
-<li><p><strong>obj</strong> (<em>Object</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>genes</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>)</p></li>
+<li><p><strong>obj</strong> (<em>Object</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -828,6 +921,28 @@ cells of this type.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#goo.cell.CellType" title="goo.cell.CellType"><em>CellType</em></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="goo.cell.CellType.diffsys">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">diffsys</span></span><a class="headerlink" href="#goo.cell.CellType.diffsys" title="Link to this definition">¶</a></dt>
+<dd><p>Get the diffusion system for this cell type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.cell.CellType.link_molecule_to_property">
+<span class="sig-name descname"><span class="pre">link_molecule_to_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">molecule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#CellType.link_molecule_to_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.CellType.link_molecule_to_property" title="Link to this definition">¶</a></dt>
+<dd><p>Link molecule to property for all cells of this type.</p>
+<p>This will set up the link for all existing cells and any new cells created
+from this cell type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>molecule</strong> (<a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>) – The molecule to link</p></li>
+<li><p><strong>property</strong> – The property to link the molecule to</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -877,12 +992,17 @@ cells of this type.</p></li>
 <p>A cell type that is reduced in complexity for faster rendering.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.SimplePattern.color">
-<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.5,</span> <span class="pre">0.5,</span> <span class="pre">0.5)</span></em><a class="headerlink" href="#goo.cell.SimplePattern.color" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.5,</span> <span class="pre">0.5,</span> <span class="pre">0.5)</span></em><a class="headerlink" href="#goo.cell.SimplePattern.color" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="goo.cell.SimplePattern.mesh_kwargs">
+<span class="sig-name descname"><span class="pre">mesh_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#goo.cell.SimplePattern.mesh_kwargs" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.SimplePattern.physics_constructor">
-<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;goo.utils.PhysicsConstructor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#goo.cell.SimplePattern.physics_constructor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><span class="pre">PhysicsConstructor</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;goo.utils.PhysicsConstructor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#goo.cell.SimplePattern.physics_constructor" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>bobj</strong> (<a class="reference internal" href="goo.utils.html#goo.utils.BlenderObject" title="goo.utils.BlenderObject"><em>BlenderObject</em></a>)</p>
@@ -898,22 +1018,22 @@ cells of this type.</p></li>
 <dd><p>Bases: <a class="reference internal" href="#goo.cell.CellPattern" title="goo.cell.CellPattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">CellPattern</span></code></a></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.StandardPattern.color">
-<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.007,</span> <span class="pre">0.021,</span> <span class="pre">0.3)</span></em><a class="headerlink" href="#goo.cell.StandardPattern.color" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.007,</span> <span class="pre">0.021,</span> <span class="pre">0.3)</span></em><a class="headerlink" href="#goo.cell.StandardPattern.color" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.StandardPattern.initial_pressure">
-<span class="sig-name descname"><span class="pre">initial_pressure</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></em><a class="headerlink" href="#goo.cell.StandardPattern.initial_pressure" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">initial_pressure</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">12</span></em><a class="headerlink" href="#goo.cell.StandardPattern.initial_pressure" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.StandardPattern.mesh_kwargs">
-<span class="sig-name descname"><span class="pre">mesh_kwargs</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#goo.cell.StandardPattern.mesh_kwargs" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mesh_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#goo.cell.StandardPattern.mesh_kwargs" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.StandardPattern.physics_constructor">
-<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;goo.utils.PhysicsConstructor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#goo.cell.StandardPattern.physics_constructor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><span class="pre">PhysicsConstructor</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;goo.utils.PhysicsConstructor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#goo.cell.StandardPattern.physics_constructor" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>bobj</strong> (<a class="reference internal" href="goo.utils.html#goo.utils.BlenderObject" title="goo.utils.BlenderObject"><em>BlenderObject</em></a>)</p>
@@ -930,17 +1050,17 @@ cells of this type.</p></li>
 <p>A larger cell type used for modeling embryonic yolks.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.YolkPattern.color">
-<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.64,</span> <span class="pre">0.64,</span> <span class="pre">0.64)</span></em><a class="headerlink" href="#goo.cell.YolkPattern.color" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">color</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">(0.64,</span> <span class="pre">0.64,</span> <span class="pre">0.64)</span></em><a class="headerlink" href="#goo.cell.YolkPattern.color" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.YolkPattern.mesh_kwargs">
-<span class="sig-name descname"><span class="pre">mesh_kwargs</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'size':</span> <span class="pre">10,</span> <span class="pre">'subdivisions':</span> <span class="pre">4}</span></em><a class="headerlink" href="#goo.cell.YolkPattern.mesh_kwargs" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">mesh_kwargs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'size':</span> <span class="pre">10,</span> <span class="pre">'subdivisions':</span> <span class="pre">4}</span></em><a class="headerlink" href="#goo.cell.YolkPattern.mesh_kwargs" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="goo.cell.YolkPattern.physics_constructor">
-<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;goo.utils.PhysicsConstructor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#goo.cell.YolkPattern.physics_constructor" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">physics_constructor</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="goo.utils.html#goo.utils.PhysicsConstructor" title="goo.utils.PhysicsConstructor"><span class="pre">PhysicsConstructor</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;goo.utils.PhysicsConstructor</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#goo.cell.YolkPattern.physics_constructor" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>bobj</strong> (<a class="reference internal" href="goo.utils.html#goo.utils.BlenderObject" title="goo.utils.BlenderObject"><em>BlenderObject</em></a>)</p>
@@ -952,13 +1072,13 @@ cells of this type.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="goo.cell.create_direction_updater">
-<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">create_direction_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><span class="pre">Gene</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#create_direction_updater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.create_direction_updater" title="Link to this definition">¶</a></dt>
-<dd><p>Create a direction updater that links a gene to the direction of a cell.</p>
+<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">create_direction_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metabolite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><span class="pre">Gene</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#create_direction_updater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.create_direction_updater" title="Link to this definition">¶</a></dt>
+<dd><p>Create a direction updater that links a gene or molecule to the direction of a cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> (<a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>) – The cell object.</p></li>
-<li><p><strong>gene</strong> (<a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><em>Gene</em></a>) – The gene that is linked to the direction.</p></li>
+<li><p><strong>metabolite</strong> (<a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><em>Gene</em></a><em> | </em><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>) – The gene or molecule that is linked to the direction.</p></li>
 </ul>
 </dd>
 </dl>
@@ -966,16 +1086,17 @@ cells of this type.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="goo.cell.create_motion_strength_updater">
-<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">create_motion_strength_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><span class="pre">Gene</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#create_motion_strength_updater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.create_motion_strength_updater" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">create_motion_strength_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metabolite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><span class="pre">Gene</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.5,</span> <span class="pre">2)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#create_motion_strength_updater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.create_motion_strength_updater" title="Link to this definition">¶</a></dt>
 <dd><p>Create a motion strength updater that links a gene to
 the motion strength of a cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> (<a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>) – The cell object.</p></li>
-<li><p><strong>gene</strong> (<a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><em>Gene</em></a>) – The gene that is linked to the motion strength.</p></li>
+<li><p><strong>gene</strong> – The gene that is linked to the motion strength.</p></li>
 <li><p><strong>gscale</strong> – The scale of the gene values.</p></li>
 <li><p><strong>pscale</strong> – The scale of the motion strength values.</p></li>
+<li><p><strong>metabolite</strong> (<a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><em>Gene</em></a><em> | </em><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -986,17 +1107,18 @@ the motion strength of a cell.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="goo.cell.create_scalar_updater">
-<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">create_scalar_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><span class="pre">Gene</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relationship</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#create_scalar_updater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.create_scalar_updater" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">create_scalar_updater</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><span class="pre">Cell</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">metabolite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><span class="pre">Gene</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><span class="pre">Molecule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relationship</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pscale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#create_scalar_updater"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.create_scalar_updater" title="Link to this definition">¶</a></dt>
 <dd><p>Create a scalar updater that links a gene to a scalar property of a cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> (<a class="reference internal" href="#goo.cell.Cell" title="goo.cell.Cell"><em>Cell</em></a>) – The cell object.</p></li>
-<li><p><strong>gene</strong> (<a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><em>Gene</em></a>) – The gene that is linked to the property.</p></li>
+<li><p><strong>gene</strong> – The gene that is linked to the property.</p></li>
 <li><p><strong>property</strong> – The property that is linked to the gene.</p></li>
 <li><p><strong>relationship</strong> – The relationship between the gene and the property.</p></li>
 <li><p><strong>gscale</strong> – The scale of the gene values.</p></li>
 <li><p><strong>pscale</strong> – The scale of the property values.</p></li>
+<li><p><strong>metabolite</strong> (<a class="reference internal" href="goo.gene.html#goo.gene.Gene" title="goo.gene.Gene"><em>Gene</em></a><em> | </em><a class="reference internal" href="goo.molecule.html#goo.molecule.Molecule" title="goo.molecule.Molecule"><em>Molecule</em></a>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1007,13 +1129,12 @@ the motion strength of a cell.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="goo.cell.declare_settings">
-<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">declare_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bpy_struct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#declare_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.declare_settings" title="Link to this definition">¶</a></dt>
-<dd><p>Recursively apply stored settings to a Blender modifier.</p>
-<dl class="field-list simple">
+<span class="sig-prename descclassname"><span class="pre">goo.cell.</span></span><span class="sig-name descname"><span class="pre">declare_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mod</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bpy_struct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mod'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/cell.html#declare_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.cell.declare_settings" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mod</strong> (<em>bpy_struct</em>) – The Blender modifier to which the settings are applied.</p></li>
-<li><p><strong>settings</strong> (<em>dict</em>) – A dictionary containing the settings.</p></li>
+<li><p><strong>mod</strong> (<em>bpy_struct</em>)</p></li>
+<li><p><strong>settings</strong> (<em>dict</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -1067,7 +1188,7 @@ the motion strength of a cell.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1108,12 +1229,16 @@ the motion strength of a cell.</p>
 <li><a class="reference internal" href="#goo.cell.Cell.disable_physics"><code class="docutils literal notranslate"><span class="pre">Cell.disable_physics()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.divide"><code class="docutils literal notranslate"><span class="pre">Cell.divide()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.enable_physics"><code class="docutils literal notranslate"><span class="pre">Cell.enable_physics()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.gene_concs"><code class="docutils literal notranslate"><span class="pre">Cell.gene_concs</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.get_modifier"><code class="docutils literal notranslate"><span class="pre">Cell.get_modifier()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.homo_adhesion_strength"><code class="docutils literal notranslate"><span class="pre">Cell.homo_adhesion_strength</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.is_collapsed"><code class="docutils literal notranslate"><span class="pre">Cell.is_collapsed()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.link_gene_to_property"><code class="docutils literal notranslate"><span class="pre">Cell.link_gene_to_property()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.link_molecule_to_property"><code class="docutils literal notranslate"><span class="pre">Cell.link_molecule_to_property()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.major_axis"><code class="docutils literal notranslate"><span class="pre">Cell.major_axis()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.mat"><code class="docutils literal notranslate"><span class="pre">Cell.mat</span></code></a></li>
-<li><a class="reference internal" href="#goo.cell.Cell.metabolites"><code class="docutils literal notranslate"><span class="pre">Cell.metabolites</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.minor_axis"><code class="docutils literal notranslate"><span class="pre">Cell.minor_axis()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.molecule_concs"><code class="docutils literal notranslate"><span class="pre">Cell.molecule_concs</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.move"><code class="docutils literal notranslate"><span class="pre">Cell.move()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.name"><code class="docutils literal notranslate"><span class="pre">Cell.name</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.obj_eval"><code class="docutils literal notranslate"><span class="pre">Cell.obj_eval</span></code></a></li>
@@ -1124,12 +1249,18 @@ the motion strength of a cell.</p>
 <li><a class="reference internal" href="#goo.cell.Cell.remesh"><code class="docutils literal notranslate"><span class="pre">Cell.remesh()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.remove_effector"><code class="docutils literal notranslate"><span class="pre">Cell.remove_effector()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.sav_ratio"><code class="docutils literal notranslate"><span class="pre">Cell.sav_ratio()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.secrete"><code class="docutils literal notranslate"><span class="pre">Cell.secrete()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.sense"><code class="docutils literal notranslate"><span class="pre">Cell.sense()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.sphericity"><code class="docutils literal notranslate"><span class="pre">Cell.sphericity()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.step_grn"><code class="docutils literal notranslate"><span class="pre">Cell.step_grn()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.step_growth"><code class="docutils literal notranslate"><span class="pre">Cell.step_growth()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.stiffness"><code class="docutils literal notranslate"><span class="pre">Cell.stiffness</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.update_physics_with_grn"><code class="docutils literal notranslate"><span class="pre">Cell.update_physics_with_grn()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.update_physics_with_molecules"><code class="docutils literal notranslate"><span class="pre">Cell.update_physics_with_molecules()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.vertices"><code class="docutils literal notranslate"><span class="pre">Cell.vertices()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.viscosity"><code class="docutils literal notranslate"><span class="pre">Cell.viscosity</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.Cell.volume"><code class="docutils literal notranslate"><span class="pre">Cell.volume()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.Cell.voxel_size"><code class="docutils literal notranslate"><span class="pre">Cell.voxel_size</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#goo.cell.CellPattern"><code class="docutils literal notranslate"><span class="pre">CellPattern</span></code></a><ul>
@@ -1138,11 +1269,9 @@ the motion strength of a cell.</p>
 <li><a class="reference internal" href="#goo.cell.CellPattern.build_network"><code class="docutils literal notranslate"><span class="pre">CellPattern.build_network()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.build_obj"><code class="docutils literal notranslate"><span class="pre">CellPattern.build_obj()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.build_physics"><code class="docutils literal notranslate"><span class="pre">CellPattern.build_physics()</span></code></a></li>
-<li><a class="reference internal" href="#goo.cell.CellPattern.circuits"><code class="docutils literal notranslate"><span class="pre">CellPattern.circuits</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.color"><code class="docutils literal notranslate"><span class="pre">CellPattern.color</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.initial_pressure"><code class="docutils literal notranslate"><span class="pre">CellPattern.initial_pressure</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.mesh_kwargs"><code class="docutils literal notranslate"><span class="pre">CellPattern.mesh_kwargs</span></code></a></li>
-<li><a class="reference internal" href="#goo.cell.CellPattern.metabolites"><code class="docutils literal notranslate"><span class="pre">CellPattern.metabolites</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.physics_constructor"><code class="docutils literal notranslate"><span class="pre">CellPattern.physics_constructor</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.reset"><code class="docutils literal notranslate"><span class="pre">CellPattern.reset()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellPattern.retrieve_cell"><code class="docutils literal notranslate"><span class="pre">CellPattern.retrieve_cell()</span></code></a></li>
@@ -1152,12 +1281,15 @@ the motion strength of a cell.</p>
 <li><a class="reference internal" href="#goo.cell.CellType"><code class="docutils literal notranslate"><span class="pre">CellType</span></code></a><ul>
 <li><a class="reference internal" href="#goo.cell.CellType.create_cell"><code class="docutils literal notranslate"><span class="pre">CellType.create_cell()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellType.default_celltype"><code class="docutils literal notranslate"><span class="pre">CellType.default_celltype()</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.CellType.diffsys"><code class="docutils literal notranslate"><span class="pre">CellType.diffsys</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.CellType.link_molecule_to_property"><code class="docutils literal notranslate"><span class="pre">CellType.link_molecule_to_property()</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.CellType.set_hetero_adhesion_strength"><code class="docutils literal notranslate"><span class="pre">CellType.set_hetero_adhesion_strength()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#goo.cell.PropertyUpdater"><code class="docutils literal notranslate"><span class="pre">PropertyUpdater</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.SimplePattern"><code class="docutils literal notranslate"><span class="pre">SimplePattern</span></code></a><ul>
 <li><a class="reference internal" href="#goo.cell.SimplePattern.color"><code class="docutils literal notranslate"><span class="pre">SimplePattern.color</span></code></a></li>
+<li><a class="reference internal" href="#goo.cell.SimplePattern.mesh_kwargs"><code class="docutils literal notranslate"><span class="pre">SimplePattern.mesh_kwargs</span></code></a></li>
 <li><a class="reference internal" href="#goo.cell.SimplePattern.physics_constructor"><code class="docutils literal notranslate"><span class="pre">SimplePattern.physics_constructor</span></code></a></li>
 </ul>
 </li>
@@ -1190,7 +1322,7 @@ the motion strength of a cell.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
