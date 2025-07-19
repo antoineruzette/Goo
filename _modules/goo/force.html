@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.force - Goo documentation</title>
+        <title>goo.force - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.division.html">goo.division</a></li>
@@ -262,11 +263,14 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for goo.force</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">bmesh</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">override</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">goo.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 
@@ -286,7 +290,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Object</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;FORCE&quot;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Force</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span>
 
         <span class="c1"># Instantiate force field object</span>
@@ -344,7 +348,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@min_dist</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">min_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_dist</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">min_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">min_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">min_dist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">use_min_distance</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
@@ -352,14 +356,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">distance_min</span> <span class="o">=</span> <span class="n">min_dist</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">max_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">max_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Maximum distance an object can be from a force to be affected.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">use_max_distance</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">max_dist</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@max_dist</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">max_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">max_dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">max_dist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">use_max_distance</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
@@ -367,12 +371,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">distance_max</span> <span class="o">=</span> <span class="n">max_dist</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shape of the force field.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">shape</span>
 
     <span class="nd">@shape</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
 
     <span class="nd">@property</span>
@@ -395,7 +399,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An adhesion force.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">AdhesionForce</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;FORCE&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;FORCE&quot;</span><span class="p">)</span>
 
     <span class="nd">@override</span>
     <span class="nd">@property</span>
@@ -414,7 +418,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A motion force.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">MotionForce</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;FORCE&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;FORCE&quot;</span><span class="p">)</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="s2">&quot;PLANE&quot;</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">apply_to_rotation</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">init_strength</span> <span class="o">=</span> <span class="kc">None</span>
@@ -428,7 +432,6 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">strength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="o">-</span><span class="n">strength</span>
 
-    <span class="c1"># TODO: split into just change location and set rotation. &quot;point_towards&quot;</span>
 <div class="viewcode-block" id="MotionForce.point_towards">
 <a class="viewcode-back" href="../../user_guide/goo.force.html#goo.force.MotionForce.point_towards">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">point_towards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">:</span> <span class="n">Vector</span><span class="p">):</span>
@@ -443,57 +446,13 @@
 </div>
 
 
-
-<span class="c1"># TODO: remove because not used</span>
-<div class="viewcode-block" id="create_force">
-<a class="viewcode-back" href="../../user_guide/goo.force.html#goo.force.create_force">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">create_force</span><span class="p">(</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">loc</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span>
-    <span class="n">strength</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FORCE&quot;</span><span class="p">,</span>
-    <span class="n">falloff</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">min_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;POINT&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Force</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a new force field.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        name: The name of the force field object.</span>
-<span class="sd">        loc: The location of the force field object.</span>
-<span class="sd">        strength: The strength of the force field.</span>
-<span class="sd">        type: The type of the force field.</span>
-<span class="sd">        falloff: The falloff power of the force field.</span>
-<span class="sd">        min_dist: The minimum distance for the force field.</span>
-<span class="sd">        max_dist: The maximum distance for the force field.</span>
-<span class="sd">        shape: The shape of the force field. Defaults to &quot;POINT&quot;.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Force: The created force field object.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">obj</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">loc</span>
-    <span class="n">force</span> <span class="o">=</span> <span class="n">Force</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
-
-    <span class="n">force</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="n">strength</span>
-    <span class="n">force</span><span class="o">.</span><span class="n">falloff</span> <span class="o">=</span> <span class="n">falloff</span>
-    <span class="n">force</span><span class="o">.</span><span class="n">min_dist</span> <span class="o">=</span> <span class="n">min_dist</span>
-    <span class="n">force</span><span class="o">.</span><span class="n">max_dist</span> <span class="o">=</span> <span class="n">max_dist</span>
-    <span class="n">force</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">shape</span>
-
-    <span class="n">ForceCollection</span><span class="o">.</span><span class="n">global_forces</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">force</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">force</span></div>
-
-
-
 <div class="viewcode-block" id="create_adhesion">
 <a class="viewcode-back" href="../../user_guide/goo.force.html#goo.force.create_adhesion">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_adhesion</span><span class="p">(</span>
     <span class="n">strength</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">obj</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Object</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">loc</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">obj</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Object</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">loc</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;POINT&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AdhesionForce</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a new adhesion force.</span>
@@ -646,11 +605,46 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Boundary</span><span class="p">(</span><span class="n">BlenderObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A boundary for cells.&quot;&quot;&quot;</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume_history</span> <span class="o">=</span> <span class="p">[]</span>
+
 <div class="viewcode-block" id="Boundary.setup_physics">
 <a class="viewcode-back" href="../../user_guide/goo.force.html#goo.force.Boundary.setup_physics">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">setup_physics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up physics for the boundary.&quot;&quot;&quot;</span>
         <span class="n">BoundaryCollisionConstructor</span><span class="p">()</span><span class="o">.</span><span class="n">construct</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Boundary.update_volume">
+<a class="viewcode-back" href="../../user_guide/goo.force.html#goo.force.Boundary.update_volume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_volume</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the volume of the boundary.&quot;&quot;&quot;</span>
+        <span class="n">bm</span> <span class="o">=</span> <span class="n">bmesh</span><span class="o">.</span><span class="n">new</span><span class="p">()</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">from_mesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">matrix_world</span><span class="p">)</span>
+        <span class="n">volume</span> <span class="o">=</span> <span class="n">bm</span><span class="o">.</span><span class="n">calc_volume</span><span class="p">()</span>
+        <span class="n">bm</span><span class="o">.</span><span class="n">free</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">volume</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">volume</span></div>
+
+
+<div class="viewcode-block" id="Boundary.remesh">
+<a class="viewcode-back" href="../../user_guide/goo.force.html#goo.force.Boundary.remesh">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remesh the boundary mesh.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            voxel_size: The resolution used for the remesher (smaller means more polygons).</span>
+<span class="sd">            smooth: If true, the final faces will appear smooth.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">remesh_mode</span> <span class="o">=</span> <span class="s2">&quot;VOXEL&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">remesh_voxel_size</span> <span class="o">=</span> <span class="n">voxel_size</span>
+        <span class="k">with</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">temp_override</span><span class="p">(</span><span class="n">active_object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">):</span>
+            <span class="n">bpy</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">voxel_remesh</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">polygons</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">use_smooth</span> <span class="o">=</span> <span class="n">smooth</span></div>
 </div>
 
 
@@ -663,7 +657,7 @@
 <span class="sd">    Args:</span>
 <span class="sd">        loc: Center of the boundary.</span>
 <span class="sd">        size: Radius of the boundary.</span>
-<span class="sd">        mesh: Shape fo the boundary.</span>
+<span class="sd">        mesh: Shape of the boundary.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">obj</span> <span class="o">=</span> <span class="n">create_mesh</span><span class="p">(</span><span class="s2">&quot;Boundary&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">mesh</span><span class="o">=</span><span class="n">mesh</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
@@ -686,7 +680,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -706,7 +700,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.gene - Goo documentation</title>
+        <title>goo.gene - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.division.html">goo.division</a></li>
@@ -263,20 +264,22 @@
         <article role="main" id="furo-main-content">
           <h1>Source code for goo.gene</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">override</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">antimony</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">roadrunner</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionSystem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">override</span>
+
+
+<span class="c1"># from .molecule import DiffusionSystem</span>
 
 
 <div class="viewcode-block" id="Gene">
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.Gene">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Gene</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gene class to represent a gene in the gene regulatory network.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        name: Name of the gene.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -315,7 +318,7 @@
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.ProdAnd">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProdAnd</span><span class="p">(</span><span class="n">Circuit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;d[z]/dt = k([x] AND [y]), optional substrate s consumed, </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;d[z]/dt = k([x] AND [y]), optional substrate s consumed,</span>
 <span class="sd">    and optional leaky factor a0.&quot;&quot;&quot;</span>
 
     <span class="n">z</span><span class="p">:</span> <span class="n">Gene</span>
@@ -333,7 +336,7 @@
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.ProdActivation">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProdActivation</span><span class="p">(</span><span class="n">Circuit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;d[y]/dt = kcat * [x]**n / (Km + [x]**n), optional substrate s consumed, </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;d[y]/dt = kcat * [x]**n / (Km + [x]**n), optional substrate s consumed,</span>
 <span class="sd">    and optional leaky factor a0.&quot;&quot;&quot;</span>
 
     <span class="n">y</span><span class="p">:</span> <span class="n">Gene</span>
@@ -350,7 +353,7 @@
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.ProdRepression">[docs]</a>
 <span class="nd">@dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProdRepression</span><span class="p">(</span><span class="n">Circuit</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;d[y]/dt = kcat / (Km + [x]**n), optional substrate s consumed, </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;d[y]/dt = kcat / (Km + [x]**n), optional substrate s consumed,</span>
 <span class="sd">    and optional leaky factor a0.&quot;&quot;&quot;</span>
 
     <span class="n">y</span><span class="p">:</span> <span class="n">Gene</span>
@@ -403,7 +406,7 @@
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.RoadRunnerEngine">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RoadRunnerEngine</span><span class="p">(</span><span class="n">CircuitEngine</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Engine to simulate gene regulatory networks using RoadRunner.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        model: Model of the gene regulatory network.</span>
 <span class="sd">        result: Result of the simulation.</span>
@@ -459,9 +462,9 @@
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.RoadRunnerEngine.step">[docs]</a>
     <span class="nd">@override</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> 
-        <span class="n">metabolite_concs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Gene</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> 
-        <span class="nb">iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> 
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">metabolite_concs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Gene</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="nb">iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates new gene concentrations.&quot;&quot;&quot;</span>
@@ -472,7 +475,7 @@
         <span class="c1"># Replacement of Tellurium with lower-level functions</span>
         <span class="n">antimony</span><span class="o">.</span><span class="n">clearPreviousLoads</span><span class="p">()</span>
         <span class="n">antimony</span><span class="o">.</span><span class="n">freeAll</span><span class="p">()</span>
-        <span class="n">code</span> <span class="o">=</span> <span class="n">antimony</span><span class="o">.</span><span class="n">loadAntimonyString</span><span class="p">(</span><span class="n">model_full</span><span class="p">)</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">antimony</span><span class="o">.</span><span class="n">loadAntimonyString</span><span class="p">(</span><span class="n">model_full</span><span class="p">)</span>  <span class="c1"># noqa: F841</span>
         <span class="n">mid</span> <span class="o">=</span> <span class="n">antimony</span><span class="o">.</span><span class="n">getMainModuleName</span><span class="p">()</span>
         <span class="n">rr</span> <span class="o">=</span> <span class="n">roadrunner</span><span class="o">.</span><span class="n">RoadRunner</span><span class="p">(</span><span class="n">antimony</span><span class="o">.</span><span class="n">getSBMLString</span><span class="p">(</span><span class="n">mid</span><span class="p">))</span>
 
@@ -480,15 +483,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_model_full</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabolite_concs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Gene</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encodes the entire model, including metabolites, </span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_model_full</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_concs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Gene</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Encodes the entire model, including metabolites,</span>
 <span class="sd">        into a string representation to be fed into the Roadrunner solver.&quot;&quot;&quot;</span>
         <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;model cell&quot;</span>
         <span class="n">suffix</span> <span class="o">=</span> <span class="s2">&quot;end&quot;</span>
         <span class="n">gene_levels</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
             <span class="p">[</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metabolite</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="k">for</span> <span class="n">metabolite</span><span class="p">,</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">metabolite_concs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">gene</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">for</span> <span class="n">gene</span><span class="p">,</span> <span class="n">level</span> <span class="ow">in</span> <span class="n">gene_concs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">]</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">prefix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">gene_levels</span><span class="p">,</span> <span class="n">suffix</span><span class="p">])</span>
@@ -500,8 +503,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get current gene concentrations.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span>
-        <span class="n">colnames</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">name</span><span class="p">:</span> <span class="n">Gene</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="n">new_concs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">colnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:]))</span>
+        <span class="n">colnames</span> <span class="o">=</span> <span class="p">(</span><span class="n">Gene</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">new_concs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">colnames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:],</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">new_concs</span></div>
 </div>
 
@@ -518,17 +521,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">concs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">gene_concs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">circuit_engine</span><span class="p">:</span> <span class="n">CircuitEngine</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">concs</span> <span class="o">=</span> <span class="n">concs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gene_concs</span> <span class="o">=</span> <span class="n">gene_concs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_engine</span> <span class="o">=</span> <span class="n">circuit_engine</span> <span class="k">if</span> <span class="n">circuit_engine</span> <span class="k">else</span> <span class="n">RoadRunnerEngine</span><span class="p">()</span>
 
 <div class="viewcode-block" id="GeneRegulatoryNetwork.copy">
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;GeneRegulatoryNetwork&quot;</span><span class="p">:</span>
         <span class="n">grn</span> <span class="o">=</span> <span class="n">GeneRegulatoryNetwork</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">concs</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gene_concs</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_engine</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">grn</span></div>
@@ -545,45 +548,42 @@
 <a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_concs">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update_concs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">diffusion_system</span><span class="p">:</span> <span class="n">DiffusionSystem</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="c1"># diffusion_system: DiffusionSystem = None,</span>
         <span class="n">center</span><span class="p">:</span> <span class="n">Vector</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update network concentrations based on underlying diffusion systems, </span>
-<span class="sd">        cell center and radius.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">diffusion_system</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">center</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">radius</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;If there is a diffusion system, center or radius </span><span class="se">\</span>
-<span class="s2">                        must be supplied as arguments.&quot;</span>
-                <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_signaling_concs</span><span class="p">(</span><span class="n">diffusion_system</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_metabolite_concs</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update network concentrations based on underlying diffusion systems,</span>
+<span class="sd">        # cell center and radius.&quot;&quot;&quot;</span>
+        <span class="c1"># if diffusion_system is not None:</span>
+        <span class="c1">#     if center is None or radius is None:</span>
+        <span class="c1">#         raise ValueError(</span>
+        <span class="c1">#             &quot;If there is a diffusion system, center or radius \</span>
+        <span class="c1">#                 must be supplied as arguments.&quot;</span>
+        <span class="c1">#         )</span>
+            <span class="c1"># self.update_signaling_concs(diffusion_system, center, radius)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_gene_concs</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="GeneRegulatoryNetwork.update_metabolite_concs">
-<a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_metabolite_concs">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_metabolite_concs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="GeneRegulatoryNetwork.update_gene_concs">
+<a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_gene_concs">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_gene_concs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update network concentrations based on the model.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_engine</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concs</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_engine</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gene_concs</span><span class="p">,</span> <span class="nb">iter</span><span class="o">=</span><span class="nb">iter</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
         <span class="n">new_concs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_circuit_engine</span><span class="o">.</span><span class="n">retrieve_concs</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">concs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_concs</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="GeneRegulatoryNetwork.update_signaling_concs">
-<a class="viewcode-back" href="../../user_guide/goo.gene.html#goo.gene.GeneRegulatoryNetwork.update_signaling_concs">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_signaling_concs</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> 
-        <span class="n">diffusion_system</span><span class="p">:</span> <span class="n">DiffusionSystem</span><span class="p">,</span> 
-        <span class="n">center</span><span class="p">:</span> <span class="n">Vector</span><span class="p">,</span> 
-        <span class="n">radius</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update network concentrations based on the underlying diffusion system.&quot;&quot;&quot;</span>
-        <span class="n">signaling_concs</span> <span class="o">=</span> <span class="n">diffusion_system</span><span class="o">.</span><span class="n">get_ball_concentrations</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">concs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">signaling_concs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gene_concs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_concs</span><span class="p">)</span></div>
 </div>
 
+
+    <span class="c1"># def update_signaling_concs(</span>
+    <span class="c1">#     self,</span>
+    <span class="c1">#     diffusion_system: DiffusionSystem,</span>
+    <span class="c1">#     center: Vector,</span>
+    <span class="c1">#     radius: float</span>
+    <span class="c1"># ):</span>
+    <span class="c1">#     &quot;&quot;&quot;Update gene levels based on the underlying diffusion system.&quot;&quot;&quot;</span>
+    <span class="c1">#     signaling_concs = diffusion_system.get_ball_concentrations(center, radius)</span>
+    <span class="c1">#     self.gene_concs.update(signaling_concs)</span>
 </pre></div>
         </article>
       </div>
@@ -596,7 +596,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -616,7 +616,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

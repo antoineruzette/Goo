@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="goo.growth" href="goo.growth.html" /><link rel="prev" title="goo.division" href="goo.division.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.force - Goo documentation</title>
+        <title>goo.force - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,7 +194,7 @@
     <img class="sidebar-logo" src="../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -205,6 +205,7 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="goo.division.html">goo.division</a></li>
@@ -285,18 +286,41 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="goo.force.Boundary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.force.</span></span><span class="sig-name descname"><span class="pre">Boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Object</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/force.html#Boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.force.Boundary" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">goo.force.</span></span><span class="sig-name descname"><span class="pre">Boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/force.html#Boundary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.force.Boundary" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="goo.utils.html#goo.utils.BlenderObject" title="goo.utils.BlenderObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">BlenderObject</span></code></a></p>
 <p>A boundary for cells.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.force.Boundary.remesh">
+<span class="sig-name descname"><span class="pre">remesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voxel_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smooth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/goo/force.html#Boundary.remesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.force.Boundary.remesh" title="Link to this definition">¶</a></dt>
+<dd><p>Remesh the boundary mesh.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>obj</strong> (<em>Object</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>voxel_size</strong> (<em>float</em>) – The resolution used for the remesher (smaller means more polygons).</p></li>
+<li><p><strong>smooth</strong> (<em>bool</em>) – If true, the final faces will appear smooth.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
 </dd>
 </dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="goo.force.Boundary.setup_physics">
 <span class="sig-name descname"><span class="pre">setup_physics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/goo/force.html#Boundary.setup_physics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.force.Boundary.setup_physics" title="Link to this definition">¶</a></dt>
 <dd><p>Set up physics for the boundary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="goo.force.Boundary.update_volume">
+<span class="sig-name descname"><span class="pre">update_volume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../_modules/goo/force.html#Boundary.update_volume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.force.Boundary.update_volume" title="Link to this definition">¶</a></dt>
+<dd><p>Update the volume of the boundary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -354,7 +378,7 @@ with cells to influence their motion.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="goo.force.Force.max_dist">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_dist</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#goo.force.Force.max_dist" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_dist</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#goo.force.Force.max_dist" title="Link to this definition">¶</a></dt>
 <dd><p>Maximum distance an object can be from a force to be affected.</p>
 </dd></dl>
 
@@ -366,7 +390,7 @@ with cells to influence their motion.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="goo.force.Force.shape">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#goo.force.Force.shape" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#goo.force.Force.shape" title="Link to this definition">¶</a></dt>
 <dd><p>Shape of the force field.</p>
 </dd></dl>
 
@@ -518,34 +542,8 @@ If None, a new object is created.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>loc</strong> (<em>tuple</em>) – Center of the boundary.</p></li>
 <li><p><strong>size</strong> (<em>float</em>) – Radius of the boundary.</p></li>
-<li><p><strong>mesh</strong> (<em>str</em>) – Shape fo the boundary.</p></li>
+<li><p><strong>mesh</strong> (<em>str</em>) – Shape of the boundary.</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="goo.force.create_force">
-<span class="sig-prename descclassname"><span class="pre">goo.force.</span></span><span class="sig-name descname"><span class="pre">create_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strength</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'FORCE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">falloff</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'POINT'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#goo.force.Force" title="goo.force.Force"><span class="pre">Force</span></a></span></span><a class="reference internal" href="../_modules/goo/force.html#create_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#goo.force.create_force" title="Link to this definition">¶</a></dt>
-<dd><p>Creates a new force field.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – The name of the force field object.</p></li>
-<li><p><strong>loc</strong> (<em>tuple</em>) – The location of the force field object.</p></li>
-<li><p><strong>strength</strong> (<em>int</em>) – The strength of the force field.</p></li>
-<li><p><strong>type</strong> (<em>str</em>) – The type of the force field.</p></li>
-<li><p><strong>falloff</strong> (<em>float</em>) – The falloff power of the force field.</p></li>
-<li><p><strong>min_dist</strong> (<em>float</em><em> | </em><em>None</em>) – The minimum distance for the force field.</p></li>
-<li><p><strong>max_dist</strong> (<em>float</em><em> | </em><em>None</em>) – The maximum distance for the force field.</p></li>
-<li><p><strong>shape</strong> (<em>str</em>) – The shape of the force field. Defaults to “POINT”.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The created force field object.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#goo.force.Force" title="goo.force.Force">Force</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -599,7 +597,7 @@ If None, a new object is created.</p></li>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -631,7 +629,9 @@ If None, a new object is created.</p></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#goo.force.Boundary"><code class="docutils literal notranslate"><span class="pre">Boundary</span></code></a><ul>
+<li><a class="reference internal" href="#goo.force.Boundary.remesh"><code class="docutils literal notranslate"><span class="pre">Boundary.remesh()</span></code></a></li>
 <li><a class="reference internal" href="#goo.force.Boundary.setup_physics"><code class="docutils literal notranslate"><span class="pre">Boundary.setup_physics()</span></code></a></li>
+<li><a class="reference internal" href="#goo.force.Boundary.update_volume"><code class="docutils literal notranslate"><span class="pre">Boundary.update_volume()</span></code></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#goo.force.Force"><code class="docutils literal notranslate"><span class="pre">Force</span></code></a><ul>
@@ -663,7 +663,6 @@ If None, a new object is created.</p></li>
 </li>
 <li><a class="reference internal" href="#goo.force.create_adhesion"><code class="docutils literal notranslate"><span class="pre">create_adhesion()</span></code></a></li>
 <li><a class="reference internal" href="#goo.force.create_boundary"><code class="docutils literal notranslate"><span class="pre">create_boundary()</span></code></a></li>
-<li><a class="reference internal" href="#goo.force.create_force"><code class="docutils literal notranslate"><span class="pre">create_force()</span></code></a></li>
 <li><a class="reference internal" href="#goo.force.create_motion"><code class="docutils literal notranslate"><span class="pre">create_motion()</span></code></a></li>
 </ul>
 </li>
@@ -676,7 +675,7 @@ If None, a new object is created.</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../_static/doctools.js?v=9a2dae69"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

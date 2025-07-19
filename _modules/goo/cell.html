@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.08.06 -->
-        <title>goo.cell - Goo documentation</title>
+        <title>goo.cell - Goo v1.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=75810a84" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Goo  documentation</div></a>
+      <a href="../../index.html"><div class="brand">Goo v1.1.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -193,7 +193,7 @@
     <img class="sidebar-logo" src="../../_static/goo_logo_fun.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">Goo  documentation</span>
+  <span class="sidebar-brand-text">Goo v1.1.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -204,6 +204,7 @@
   <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../getting_started/example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/export_data.html">Export data</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../user_guide/api.html">API documentation</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API documentation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.cell.html">goo.cell</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/goo.division.html">goo.division</a></li>
@@ -262,18 +263,24 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for goo.cell</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing_extensions</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bmesh</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">bpy.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClothModifier</span><span class="p">,</span> <span class="n">CollisionModifier</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bpy.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClothModifier</span><span class="p">,</span> <span class="n">CollisionModifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">.force</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.gene</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Circuit</span><span class="p">,</span>
+    <span class="n">Gene</span><span class="p">,</span>
+    <span class="n">GeneRegulatoryNetwork</span> <span class="k">as</span> <span class="n">GRN</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.growth</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.gene</span><span class="w"> </span><span class="kn">import</span> <span class="n">GeneRegulatoryNetwork</span> <span class="k">as</span> <span class="n">GRN</span><span class="p">,</span> <span class="n">Gene</span><span class="p">,</span> <span class="n">Circuit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffusionSystem</span><span class="p">,</span> <span class="n">Molecule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 
 <div class="viewcode-block" id="Cell">
@@ -290,23 +297,32 @@
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        celltype (CellType): The cell type to which the cell belongs.</span>
+<span class="sd">        homo_adhesion_strength (float): The homotypic adhesion strength for this cell.</span>
+<span class="sd">            If set, overrides the cell type&#39;s default adhesion strength.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Object</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_homo_adhesion_strength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_voxel_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span>  <span class="c1"># Changed to private variable</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viscosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">25</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adhesion_force</span><span class="p">:</span> <span class="n">AdhesionForce</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adhesion_forces</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AdhesionForce</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">motion_force</span><span class="p">:</span> <span class="n">MotionForce</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">effectors</span><span class="p">:</span> <span class="n">ForceCollection</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">growth_controller</span><span class="p">:</span> <span class="n">GrowthController</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grn</span><span class="p">:</span> <span class="n">GRN</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffsys</span><span class="p">:</span> <span class="n">DiffusionSystem</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grn_hooks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffsys_hooks</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">just_divided</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">division_frame</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">physics_enabled</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mod_settings</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -325,11 +341,55 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">motion_force</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_motion&quot;</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">voxel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">remesh_voxel_size</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_voxel_size</span>
+
+    <span class="nd">@voxel_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">voxel_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_voxel_size</span> <span class="o">=</span> <span class="n">voxel_size</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">remesh_voxel_size</span> <span class="o">=</span> <span class="n">voxel_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">viscosity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viscosity</span>
+
+    <span class="nd">@viscosity</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">viscosity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viscosity</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viscosity</span> <span class="o">=</span> <span class="n">viscosity</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cloth_mod</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cloth_mod</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">air_damping</span> <span class="o">=</span> <span class="n">viscosity</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">mat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">materials</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">homo_adhesion_strength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the homotypic adhesion strength for this cell.</span>
+<span class="sd">        If not set, returns the cell type&#39;s default adhesion strength.</span>
+<span class="sd">        If cell type is not set, returns None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_homo_adhesion_strength</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_homo_adhesion_strength</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;celltype&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">celltype</span><span class="o">.</span><span class="n">homo_adhesion_strength</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@homo_adhesion_strength</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">homo_adhesion_strength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">strength</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the homotypic adhesion strength for this cell.</span>
+<span class="sd">        If set to None, will use the cell type&#39;s default adhesion strength.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_homo_adhesion_strength</span> <span class="o">=</span> <span class="n">strength</span>
+        <span class="c1"># If physics is enabled, update the adhesion force</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">physics_enabled</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">adhesion_force</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adhesion_force</span><span class="o">.</span><span class="n">strength</span> <span class="o">=</span> <span class="n">strength</span>
 
 <div class="viewcode-block" id="Cell.copy">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.copy">[docs]</a>
@@ -395,6 +455,9 @@
 <span class="sd">            The vector representing the center of mass of the cell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">vert_coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">(</span><span class="n">local_coords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vert_coords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># If no vertices, return the cell&#39;s current location</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">loc</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">local_coords</span> <span class="k">else</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">com</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">vert_coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">com</span></div>
 
@@ -409,10 +472,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            The aspect ration value for a cell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">major_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">major_axis</span><span class="p">()</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
-        <span class="n">minor_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minor_axis</span><span class="p">()</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
-        <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">major_axis</span> <span class="o">/</span> <span class="n">minor_axis</span>
-        <span class="k">return</span> <span class="n">aspect_ratio</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">major_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">major_axis</span><span class="p">()</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+            <span class="n">minor_axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minor_axis</span><span class="p">()</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+            <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">major_axis</span> <span class="o">/</span> <span class="n">minor_axis</span>
+            <span class="k">return</span> <span class="n">aspect_ratio</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">ZeroDivisionError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="c1"># Return 1.0 (perfect sphere) if we can&#39;t calculate the aspect ratio</span>
+            <span class="k">return</span> <span class="mf">1.0</span></div>
 
 
 <div class="viewcode-block" id="Cell.sphericity">
@@ -485,18 +552,28 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">()</span>
 
-        <span class="c1"># Calculate the eigenvectors and eigenvalues of the covariance matrix</span>
-        <span class="n">covariance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">)</span>
-        <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">eigenvalues</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-        <span class="n">axis</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># If not enough vertices, return a default axis</span>
+            <span class="n">default_axis</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Axis</span><span class="p">(</span><span class="n">default_axis</span><span class="p">,</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">matrix_world</span><span class="p">)</span>
 
-        <span class="n">projections</span> <span class="o">=</span> <span class="n">verts</span> <span class="o">@</span> <span class="n">axis</span>
-        <span class="n">min_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span>
-        <span class="n">max_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span>
-        <span class="n">first_vertex</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="n">min_index</span><span class="p">])</span>
-        <span class="n">last_vertex</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="n">max_index</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">Axis</span><span class="p">(</span><span class="n">Vector</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span> <span class="n">first_vertex</span><span class="p">,</span> <span class="n">last_vertex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">matrix_world</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Calculate the eigenvectors and eigenvalues of the covariance matrix</span>
+            <span class="n">covariance_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">verts</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">)</span>
+            <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">eigenvalues</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">eigenvectors</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span>
+
+            <span class="n">projections</span> <span class="o">=</span> <span class="n">verts</span> <span class="o">@</span> <span class="n">axis</span>
+            <span class="n">min_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span>
+            <span class="n">max_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">projections</span><span class="p">)</span>
+            <span class="n">first_vertex</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="n">min_index</span><span class="p">])</span>
+            <span class="n">last_vertex</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">verts</span><span class="p">[</span><span class="n">max_index</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">Axis</span><span class="p">(</span><span class="n">Vector</span><span class="p">(</span><span class="n">axis</span><span class="p">),</span> <span class="n">first_vertex</span><span class="p">,</span> <span class="n">last_vertex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">matrix_world</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">):</span>
+            <span class="c1"># If eigen decomposition fails, return a default axis</span>
+            <span class="n">default_axis</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Axis</span><span class="p">(</span><span class="n">default_axis</span><span class="p">,</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">Vector</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">matrix_world</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Cell.major_axis">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.major_axis">[docs]</a>
@@ -546,18 +623,58 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            List of coordinates of vertices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">verts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">vertices</span>
-        <span class="k">if</span> <span class="n">local_coords</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">co</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">verts</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">matrix_world</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">matrix_world</span>
-            <span class="k">return</span> <span class="p">[</span><span class="n">matrix_world</span> <span class="o">@</span> <span class="n">v</span><span class="o">.</span><span class="n">co</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">verts</span><span class="p">]</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">verts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">vertices</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">verts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Cell </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> has no vertices - this may indicate a collapsed cell&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">local_coords</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">co</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">verts</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">matrix_world</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">matrix_world</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">matrix_world</span> <span class="o">@</span> <span class="n">v</span><span class="o">.</span><span class="n">co</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">verts</span><span class="p">]</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Error accessing vertices for cell </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span></div>
+
+
+<div class="viewcode-block" id="Cell.is_collapsed">
+<a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.is_collapsed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_collapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if the cell has collapsed or is in an invalid state.</span>
+
+<span class="sd">        A cell is considered collapsed if:</span>
+<span class="sd">        1. It has no vertices</span>
+<span class="sd">        2. Its volume is zero or negative</span>
+<span class="sd">        3. Its mesh is invalid</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the cell is collapsed, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Check for zero vertices</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vertices</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="c1"># Check for invalid volume</span>
+            <span class="n">volume</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">volume</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="c1"># Check for invalid mesh</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_eval</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">vertices</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Error checking if cell </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> is collapsed: </span><span class="si">{</span><span class="n">e</span><span class="si">!s}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="Cell.recenter">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.recenter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">recenter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recenter cell origin to center of mass of cell, </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recenter cell origin to center of mass of cell,</span>
 <span class="sd">        and center forces to that same origin.&quot;&quot;&quot;</span>
         <span class="n">com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">COM</span><span class="p">()</span>
 
@@ -576,7 +693,7 @@
 
 <div class="viewcode-block" id="Cell.remesh">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.remesh">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">remesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.45</span><span class="p">,</span> <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">voxel_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">smooth</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Remesh the underlying mesh representation of the cell.</span>
 
 <span class="sd">        Remeshing is done using the built-in `voxel_remesh()`.</span>
@@ -635,7 +752,7 @@
             <span class="n">new_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mat</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Duplicate the material</span>
             <span class="n">new_mat</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_mat&quot;</span>  <span class="c1"># Give it a unique name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">materials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_mat</span>  <span class="c1"># Assign the new material to the cell</span>
-        
+
         <span class="c1"># Apply the color</span>
         <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">color</span>
         <span class="n">a</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># Ensure full opacity</span>
@@ -674,6 +791,8 @@
 
         <span class="c1"># ensure cloth mod is set correctly</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_cloth</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cloth_mod</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cloth_mod</span><span class="o">.</span><span class="n">point_cache</span><span class="o">.</span><span class="n">frame_end</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_end</span>
 
         <span class="k">for</span> <span class="n">force</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adhesion_forces</span><span class="p">:</span>
             <span class="n">force</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span>
@@ -690,13 +809,11 @@
 <span class="sd">        current modifier settings, removing all modifiers, and disabling any adhesion</span>
 <span class="sd">        forces.</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            RuntimeError: If physics is not enabled.</span>
+<span class="sd">        Note:</span>
+<span class="sd">            If physics is already disabled, this function will do nothing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">physics_enabled</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Trying to disable physics on cell </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> when already disabled!&quot;</span>
-            <span class="p">)</span>
+            <span class="k">return</span>  <span class="c1"># Exit early if physics is already disabled</span>
 
         <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">modifiers</span><span class="p">:</span>
             <span class="n">name</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">type</span>
@@ -718,7 +835,7 @@
 
 <div class="viewcode-block" id="Cell.get_modifier">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.get_modifier">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_modifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Modifier</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_modifier</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Modifier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves the first modifier of the specified type from the</span>
 <span class="sd">        underlying object representation of the cell.</span>
 
@@ -732,12 +849,12 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">cloth_mod</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ClothModifier</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cloth_mod</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ClothModifier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The cloth modifier of the cell if it exists, otherwise None.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_modifier</span><span class="p">(</span><span class="s2">&quot;CLOTH&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">collision_mod</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">CollisionModifier</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">collision_mod</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollisionModifier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The collision modifier of the cell if it exists, otherwise None.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_modifier</span><span class="p">(</span><span class="s2">&quot;COLLISION&quot;</span><span class="p">)</span>
 
@@ -763,6 +880,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">growth_controller</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">growth_controller</span><span class="o">.</span><span class="n">set_pressure</span><span class="p">(</span><span class="n">pressure</span><span class="p">)</span>
 
+    <span class="c1"># ===== Force operations =====</span>
 <div class="viewcode-block" id="Cell.add_effector">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.add_effector">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_effector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="n">Force</span> <span class="o">|</span> <span class="n">ForceCollection</span><span class="p">):</span>
@@ -793,7 +911,7 @@
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.add_force">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="p">:</span> <span class="n">Force</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a force that affects this cell.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            force: The force to add.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -812,13 +930,15 @@
         <span class="n">mother</span><span class="p">,</span> <span class="n">daughter</span> <span class="o">=</span> <span class="n">division_logic</span><span class="o">.</span><span class="n">make_divide</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">mother</span><span class="o">.</span><span class="n">just_divided</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">daughter</span><span class="o">.</span><span class="n">just_divided</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">mother</span><span class="o">.</span><span class="n">division_frame</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_current</span>
+        <span class="n">daughter</span><span class="o">.</span><span class="n">division_frame</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_current</span>
 
         <span class="k">return</span> <span class="n">mother</span><span class="p">,</span> <span class="n">daughter</span></div>
 
 
 <div class="viewcode-block" id="Cell.move">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.move">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">strength</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">strength</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set move location. If direction is not specified, then use previous</span>
 <span class="sd">        direction as reference.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -849,47 +969,51 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pressure</span> <span class="o">=</span> <span class="n">new_pressure</span></div>
 
 
+    <span class="c1"># ===== Gene regulatory network items =====</span>
 <div class="viewcode-block" id="Cell.step_grn">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.step_grn">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">step_grn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffsys</span><span class="p">:</span> <span class="n">DiffusionSystem</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate and update the metabolite concentrations </span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step_grn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate and update the gene concentrations</span>
 <span class="sd">        of the gene regulatory network after 1 time step.&quot;&quot;&quot;</span>
         <span class="n">com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">COM</span><span class="p">()</span>
         <span class="n">radius</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">()</span>
 
         <span class="c1"># Step through GRN</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">grn</span><span class="o">.</span><span class="n">update_concs</span><span class="p">(</span><span class="n">diffsys</span><span class="p">,</span> <span class="n">com</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grn</span><span class="o">.</span><span class="n">update_concs</span><span class="p">(</span><span class="n">com</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_concs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
 
+
+<div class="viewcode-block" id="Cell.update_physics_with_grn">
+<a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.update_physics_with_grn">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_physics_with_grn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Update physical attributes</span>
-        <span class="k">for</span> <span class="n">hook</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="p">:</span>
-            <span class="n">hook</span><span class="p">(</span><span class="n">diffsys</span><span class="p">)</span></div>
+        <span class="k">for</span> <span class="n">hook</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grn_hooks</span><span class="p">:</span>
+            <span class="n">hook</span><span class="p">()</span></div>
 
 
-    <span class="c1"># ===== Gene regulatory network items =====</span>
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">metabolites</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grn</span><span class="o">.</span><span class="n">concs</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gene_concs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grn</span><span class="o">.</span><span class="n">gene_concs</span>
 
-    <span class="nd">@metabolites</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">metabolites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabolites</span><span class="p">):</span>
-        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">metabolites</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">grn</span><span class="o">.</span><span class="n">concs</span> <span class="o">=</span> <span class="n">metabolites</span>
+    <span class="nd">@gene_concs</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">gene_concs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_concs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">gene_concs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grn</span><span class="o">.</span><span class="n">gene_concs</span> <span class="o">=</span> <span class="n">gene_concs</span>
 
 <div class="viewcode-block" id="Cell.link_gene_to_property">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.link_gene_to_property">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">link_gene_to_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="nb">property</span><span class="p">,</span> <span class="n">gscale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">pscale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Link gene to property, so that changes in the gene will</span>
-<span class="sd">        cause changes in the physical property.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">link_gene_to_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="p">:</span> <span class="n">Gene</span><span class="p">,</span> <span class="nb">property</span><span class="p">,</span> <span class="n">gscale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">pscale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Link gene to property, so that changes in the gene levels</span>
+<span class="sd">        will cause changes in the physical property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s2">&quot;motion_direction&quot;</span><span class="p">:</span>
             <span class="n">hook</span> <span class="o">=</span> <span class="n">create_direction_updater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s2">&quot;motion_strength&quot;</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s2">&quot;motion_strength&quot;</span><span class="p">:</span>
             <span class="n">hook</span> <span class="o">=</span> <span class="n">create_motion_strength_updater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">hook</span> <span class="o">=</span> <span class="n">create_scalar_updater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="nb">property</span><span class="p">,</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="n">gscale</span><span class="p">,</span> <span class="n">pscale</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hook</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grn_hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hook</span><span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -899,7 +1023,62 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">k</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+    <span class="c1"># ===== Sensing and secretion =====</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">molecule_concs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the concentrations of the molecules around the cell radius.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffsys</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">mol</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffsys</span><span class="o">.</span><span class="n">get_total_ball_concentrations</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">COM</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">())</span> <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffsys</span><span class="o">.</span><span class="n">molecules</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Cell.link_molecule_to_property">
+<a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.link_molecule_to_property">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">link_molecule_to_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">:</span> <span class="n">Molecule</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Link molecule to property, so that changes in the extracellular</span>
+<span class="sd">        concentrations of the molecule will cause changes in the physical property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">property</span> <span class="o">==</span> <span class="s2">&quot;motion_direction&quot;</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="n">create_direction_updater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="n">create_scalar_updater</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">,</span> <span class="nb">property</span><span class="p">,</span> <span class="s2">&quot;linear&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffsys_hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hook</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Cell.sense">
+<a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.sense">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sense</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="n">Molecule</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Step the sensing of the cell.&quot;&quot;&quot;</span>
+        <span class="n">coords</span><span class="p">,</span> <span class="n">concentrations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffsys</span><span class="o">.</span><span class="n">get_ball_concentrations</span><span class="p">(</span>
+            <span class="n">mol</span><span class="o">=</span><span class="n">mol</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">COM</span><span class="p">(),</span>
+            <span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">(),</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">coords</span><span class="p">,</span> <span class="n">concentrations</span></div>
+
+
+<div class="viewcode-block" id="Cell.secrete">
+<a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.secrete">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">secrete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="n">Molecule</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Step the secretion of the cell.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">diffsys</span><span class="o">.</span><span class="n">update_concentrations_around_sphere</span><span class="p">(</span>
+            <span class="n">mol</span><span class="o">=</span><span class="n">mol</span><span class="p">,</span>
+            <span class="n">center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">COM</span><span class="p">(),</span>
+            <span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">(),</span>
+            <span class="n">value</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Cell.update_physics_with_molecules">
+<a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.Cell.update_physics_with_molecules">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_physics_with_molecules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mol</span><span class="p">:</span> <span class="n">Molecule</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Step the extracellular molecules of the cell.&quot;&quot;&quot;</span>
+        <span class="c1"># update physical attributes</span>
+        <span class="k">for</span> <span class="n">hook</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">diffsys_hooks</span><span class="p">:</span>
+            <span class="n">hook</span><span class="p">()</span></div>
+</div>
 
 
 
@@ -912,7 +1091,7 @@
 <span class="sd">        getter: The getter function.</span>
 <span class="sd">        transformer: The transformer function.</span>
 <span class="sd">        setter: The setter function.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Attributes:</span>
 <span class="sd">        getter: A function that retrieves the gene value from a diffusion system.</span>
 <span class="sd">        transformer: A function that transforms the gene value into a property value.</span>
@@ -923,10 +1102,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">transformer</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setter</span> <span class="o">=</span> <span class="n">setter</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffsys</span><span class="p">:</span> <span class="n">DiffusionSystem</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update the property of a cell based on the gene value.&quot;&quot;&quot;</span>
-        <span class="n">gene_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getter</span><span class="p">(</span><span class="n">diffsys</span><span class="p">)</span>
-        <span class="n">prop_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">gene_value</span><span class="p">)</span>
+        <span class="n">metabolite_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getter</span><span class="p">()</span>
+        <span class="n">prop_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span><span class="n">metabolite_value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setter</span><span class="p">(</span><span class="n">prop_value</span><span class="p">)</span></div>
 
 
@@ -935,7 +1114,7 @@
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.create_scalar_updater">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_scalar_updater</span><span class="p">(</span>
     <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">,</span>
-    <span class="n">gene</span><span class="p">:</span> <span class="n">Gene</span><span class="p">,</span>
+    <span class="n">metabolite</span><span class="p">:</span> <span class="n">Gene</span> <span class="o">|</span> <span class="n">Molecule</span><span class="p">,</span>
     <span class="nb">property</span><span class="p">,</span>
     <span class="n">relationship</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
     <span class="n">gscale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -950,7 +1129,7 @@
 <span class="sd">        relationship: The relationship between the gene and the property.</span>
 <span class="sd">        gscale: The scale of the gene values.</span>
 <span class="sd">        pscale: The scale of the property values.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        A PropertyUpdater object that can be used to update the property.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -958,9 +1137,12 @@
     <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span> <span class="o">=</span> <span class="n">pscale</span>
 
     <span class="c1"># Simple gene getter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">gene_getter</span><span class="p">(</span><span class="n">diffsys</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the gene value from the diffusion system.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">cell</span><span class="o">.</span><span class="n">metabolites</span><span class="p">[</span><span class="n">gene</span><span class="p">]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metabolite_getter</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the gene value from the cell&#39;s gene regulatory network.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metabolite</span><span class="p">,</span> <span class="n">Molecule</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">cell</span><span class="o">.</span><span class="n">sense</span><span class="p">(</span><span class="n">mol</span><span class="o">=</span><span class="n">metabolite</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cell</span><span class="o">.</span><span class="n">gene_concs</span><span class="p">[</span><span class="n">metabolite</span><span class="p">]</span>
 
     <span class="c1"># Different transformers</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">linear_transformer</span><span class="p">(</span><span class="n">gene_value</span><span class="p">):</span>
@@ -988,7 +1170,7 @@
         <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">PropertyUpdater</span><span class="p">(</span><span class="n">gene_getter</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">setter</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">PropertyUpdater</span><span class="p">(</span><span class="n">metabolite_getter</span><span class="p">,</span> <span class="n">transformer</span><span class="p">,</span> <span class="n">setter</span><span class="p">)</span></div>
 
 
 
@@ -996,21 +1178,28 @@
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.create_direction_updater">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_direction_updater</span><span class="p">(</span>
     <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">,</span>
-    <span class="n">gene</span><span class="p">:</span> <span class="n">Gene</span><span class="p">,</span>
+    <span class="n">metabolite</span><span class="p">:</span> <span class="n">Gene</span> <span class="o">|</span> <span class="n">Molecule</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a direction updater that links a gene to the direction of a cell.</span>
-<span class="sd">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a direction updater that links a gene or molecule to the direction of a cell.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        cell: The cell object.</span>
-<span class="sd">        gene: The gene that is linked to the direction.</span>
+<span class="sd">        metabolite: The gene or molecule that is linked to the direction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">molecule_getter</span><span class="p">(</span><span class="n">diffsys</span><span class="p">:</span> <span class="n">DiffusionSystem</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the molecule values from the diffusion system.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">diffsys</span><span class="o">.</span><span class="n">get_coords_concentrations</span><span class="p">(</span><span class="n">gene</span><span class="p">,</span> <span class="n">cell</span><span class="o">.</span><span class="n">COM</span><span class="p">(),</span> <span class="n">cell</span><span class="o">.</span><span class="n">radius</span><span class="p">())</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">metabolite_conc_getter</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the molecule values from the cell&#39;s gene regulatory network or diffusion system.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metabolite</span><span class="p">,</span> <span class="n">Molecule</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">cell</span><span class="o">.</span><span class="n">diffsys</span><span class="o">.</span><span class="n">get_ball_concentrations</span><span class="p">(</span>
+                <span class="n">mol</span><span class="o">=</span><span class="n">metabolite</span><span class="p">,</span>
+                <span class="n">center</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">COM</span><span class="p">(),</span>
+                <span class="n">radius</span><span class="o">=</span><span class="n">cell</span><span class="o">.</span><span class="n">radius</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cell</span><span class="o">.</span><span class="n">gene_concs</span><span class="p">[</span><span class="n">metabolite</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">weighted_direction</span><span class="p">(</span><span class="n">molecule_values</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">weighted_direction</span><span class="p">(</span><span class="n">metabolite_conc</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the weighted direction of the cell based on the molecule values.&quot;&quot;&quot;</span>
-        <span class="n">coords</span><span class="p">,</span> <span class="n">concs</span> <span class="o">=</span> <span class="n">molecule_values</span>
+        <span class="n">coords</span><span class="p">,</span> <span class="n">concs</span> <span class="o">=</span> <span class="n">metabolite_conc</span>
         <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">concs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">direction</span> <span class="o">-</span> <span class="n">cell</span><span class="o">.</span><span class="n">loc</span>
 
@@ -1018,51 +1207,51 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the direction of the cell.&quot;&quot;&quot;</span>
         <span class="n">cell</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">PropertyUpdater</span><span class="p">(</span><span class="n">molecule_getter</span><span class="p">,</span> <span class="n">weighted_direction</span><span class="p">,</span> <span class="n">set_direction</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">PropertyUpdater</span><span class="p">(</span><span class="n">metabolite_conc_getter</span><span class="p">,</span> <span class="n">weighted_direction</span><span class="p">,</span> <span class="n">set_direction</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="create_motion_strength_updater">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.create_motion_strength_updater">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_motion_strength_updater</span><span class="p">(</span>
-        <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">,</span> 
-        <span class="n">gene</span><span class="p">:</span> <span class="n">Gene</span><span class="p">,</span>
+        <span class="n">cell</span><span class="p">:</span> <span class="n">Cell</span><span class="p">,</span>
+        <span class="n">metabolite</span><span class="p">:</span> <span class="n">Gene</span> <span class="o">|</span> <span class="n">Molecule</span><span class="p">,</span>
         <span class="n">gscale</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
         <span class="n">pscale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="p">):</span> 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a motion strength updater that links a gene to </span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a motion strength updater that links a gene to</span>
 <span class="sd">    the motion strength of a cell.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        cell: The cell object.</span>
 <span class="sd">        gene: The gene that is linked to the motion strength.</span>
 <span class="sd">        gscale: The scale of the gene values.</span>
 <span class="sd">        pscale: The scale of the motion strength values.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        A PropertyUpdater object that can be used to update the motion strength.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="n">gmin</span><span class="p">,</span> <span class="n">gmax</span> <span class="o">=</span> <span class="n">gscale</span>
     <span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span> <span class="o">=</span> <span class="n">pscale</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">gene_conc_getter</span><span class="p">(</span><span class="n">diffsys</span><span class="p">:</span> <span class="n">DiffusionSystem</span><span class="p">):</span> 
+    <span class="k">def</span><span class="w"> </span><span class="nf">metabolite_conc_getter</span><span class="p">():</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the gene concentration from the cell&#39;s gene regulatory network.&quot;&quot;&quot;</span>
-        <span class="n">gene_conc</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">grn</span><span class="o">.</span><span class="n">concs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
-        <span class="n">normalized_gene_conc</span> <span class="o">=</span> <span class="n">linear_transformer</span><span class="p">(</span><span class="n">gene_conc</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">normalized_gene_conc</span>
+        <span class="n">metabolite_conc</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">gene_concs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">metabolite</span><span class="p">)</span>
+        <span class="n">normalized_metabolite_conc</span> <span class="o">=</span> <span class="n">linear_transformer</span><span class="p">(</span><span class="n">metabolite_conc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">normalized_metabolite_conc</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">linear_transformer</span><span class="p">(</span><span class="n">gene_value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linear_transformer</span><span class="p">(</span><span class="n">metabolite_value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize the gene value to a value between gscale min and max.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">gene_value</span> <span class="o">&lt;=</span> <span class="n">gmin</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">metabolite_value</span> <span class="o">&lt;=</span> <span class="n">gmin</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pmin</span>
-        <span class="k">if</span> <span class="n">gene_value</span> <span class="o">&gt;=</span> <span class="n">gmax</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">metabolite_value</span> <span class="o">&gt;=</span> <span class="n">gmax</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pmax</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">gene_value</span> <span class="o">-</span> <span class="n">gmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">gmax</span> <span class="o">-</span> <span class="n">gmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">pmax</span> <span class="o">-</span> <span class="n">pmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">pmin</span>
-        
-    <span class="k">def</span><span class="w"> </span><span class="nf">weighted_motion_strength</span><span class="p">(</span><span class="n">gene_conc</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">metabolite_value</span> <span class="o">-</span> <span class="n">gmin</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">gmax</span> <span class="o">-</span> <span class="n">gmin</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">pmax</span> <span class="o">-</span> <span class="n">pmin</span><span class="p">)</span> <span class="o">+</span> <span class="n">pmin</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">weighted_motion_strength</span><span class="p">(</span><span class="n">metabolite_value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the weighted motion strength of the cell based on the gene value.&quot;&quot;&quot;</span>
-        <span class="n">motion_strength</span> <span class="o">=</span> <span class="p">(</span><span class="n">gene_conc</span> <span class="o">*</span> <span class="n">cell</span><span class="o">.</span><span class="n">motion_force</span><span class="o">.</span><span class="n">init_strength</span><span class="p">)</span>
+        <span class="n">motion_strength</span> <span class="o">=</span> <span class="p">(</span><span class="n">metabolite_value</span> <span class="o">*</span> <span class="n">cell</span><span class="o">.</span><span class="n">motion_force</span><span class="o">.</span><span class="n">init_strength</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">motion_strength</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">set_motion_strength</span><span class="p">(</span><span class="n">motion_strength</span><span class="p">):</span>
@@ -1070,8 +1259,8 @@
         <span class="n">cell</span><span class="o">.</span><span class="n">celltype</span><span class="o">.</span><span class="n">motion_strength</span> <span class="o">=</span> <span class="n">motion_strength</span>
 
     <span class="k">return</span> <span class="n">PropertyUpdater</span><span class="p">(</span>
-        <span class="n">gene_conc_getter</span><span class="p">,</span> 
-        <span class="n">weighted_motion_strength</span><span class="p">,</span> 
+        <span class="n">metabolite_conc_getter</span><span class="p">,</span>
+        <span class="n">weighted_motion_strength</span><span class="p">,</span>
         <span class="n">set_motion_strength</span>
         <span class="p">)</span></div>
 
@@ -1102,18 +1291,40 @@
 
 <div class="viewcode-block" id="declare_settings">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.declare_settings">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">declare_settings</span><span class="p">(</span><span class="n">mod</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">bpy_struct</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively apply stored settings to a Blender modifier.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        mod: The Blender modifier to which the settings are applied.</span>
-<span class="sd">        settings: A dictionary containing the settings.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">declare_settings</span><span class="p">(</span><span class="n">mod</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">bpy_struct</span><span class="p">,</span> <span class="n">settings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;mod&quot;</span><span class="p">):</span>
     <span class="k">for</span> <span class="nb">id</span><span class="p">,</span> <span class="n">setting</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">declare_settings</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="nb">id</span><span class="p">),</span> <span class="n">settings</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">setting</span><span class="p">)</span></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">submod</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">submod</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">declare_settings</span><span class="p">(</span><span class="n">submod</span><span class="p">,</span> <span class="n">setting</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> has no attribute &#39;</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prop</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">bl_rna</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s1">&#39;array_length&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">setting</span><span class="p">,</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">):</span>
+                        <span class="n">expected_len</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">array_length</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">setting</span><span class="p">)</span> <span class="o">==</span> <span class="n">expected_len</span><span class="p">:</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="c1"># For vector properties, ensure we have the right type</span>
+                                <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;FLOAT&#39;</span> <span class="ow">and</span> <span class="n">prop</span><span class="o">.</span><span class="n">subtype</span> <span class="o">==</span> <span class="s1">&#39;XYZ&#39;</span><span class="p">:</span>
+                                    <span class="c1"># For XYZ vectors, use Vector type</span>
+                                    <span class="n">coerced</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">setting</span><span class="p">)</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="c1"># For other array types, use tuple</span>
+                                    <span class="n">coerced</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">setting</span><span class="p">)</span>
+                                <span class="nb">setattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">coerced</span><span class="p">)</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Could not coerce </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> to appropriate type: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2"> expected length </span><span class="si">{</span><span class="n">expected_len</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">setting</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">setting</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">setting</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Could not set </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
 
@@ -1157,7 +1368,7 @@
 
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
             <span class="k">match</span> <span class="n">pattern</span><span class="p">:</span>
-                <span class="k">case</span> <span class="s2">&quot;standard&quot;</span><span class="p">:</span> 
+                <span class="k">case</span> <span class="s2">&quot;standard&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">StandardPattern</span><span class="p">()</span>
                 <span class="k">case</span> <span class="s2">&quot;simple&quot;</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="n">SimplePattern</span><span class="p">()</span>
@@ -1180,6 +1391,12 @@
         <span class="k">for</span> <span class="n">celltype</span><span class="p">,</span> <span class="n">strength</span> <span class="ow">in</span> <span class="n">hetero_adhesion_strengths</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_hetero_adhesion_strength</span><span class="p">(</span><span class="n">celltype</span><span class="p">,</span> <span class="n">strength</span><span class="p">)</span>
 
+        <span class="c1"># Store molecule-property links for this cell type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_molecule_property_links</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Store diffusion system for this cell type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_diffsys</span> <span class="o">=</span> <span class="kc">None</span>
+
 <div class="viewcode-block" id="CellType.default_celltype">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.CellType.default_celltype">[docs]</a>
     <span class="nd">@staticmethod</span>
@@ -1190,29 +1407,52 @@
         <span class="k">return</span> <span class="n">CellType</span><span class="o">.</span><span class="n">_default_celltype</span></div>
 
 
-    <span class="c1"># TODO: perhaps create better way of dealing with setting hierarchy</span>
-    <span class="c1"># (pattern &gt; CellType initialization &gt; create_cell)</span>
-    <span class="c1"># Moving options that can be set later (i.e. color, growth_rate) solely into Cell</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diffsys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the diffusion system for this cell type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diffsys</span>
+
+    <span class="nd">@diffsys</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diffsys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diffsys</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the diffusion system for this cell type and apply it to all cells.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            diffsys: The diffusion system to set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_diffsys</span> <span class="o">=</span> <span class="n">diffsys</span>
+
+        <span class="c1"># Apply to all existing cells</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">diffsys</span> <span class="o">=</span> <span class="n">diffsys</span>
+
+            <span class="c1"># Re-apply molecule-property links since they need the diffusion system</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_molecule_property_links&#39;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">molecule</span><span class="p">,</span> <span class="nb">property</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_molecule_property_links</span><span class="p">:</span>
+                    <span class="n">cell</span><span class="o">.</span><span class="n">link_molecule_to_property</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span>
+
 <div class="viewcode-block" id="CellType.create_cell">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.CellType.create_cell">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_cell</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">,</span>
         <span class="n">loc</span><span class="p">,</span>
-        <span class="n">color</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">voxel_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
+        <span class="n">viscosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">physics_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">physics_constructor</span><span class="p">:</span> <span class="n">PhysicsConstructor</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">growth_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">growth_type</span><span class="p">:</span> <span class="n">GrowthType</span> <span class="o">=</span> <span class="n">GrowthType</span><span class="o">.</span><span class="n">LINEAR</span><span class="p">,</span>
         <span class="n">growth_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="n">target_volume</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_volume</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">genes_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metabolites</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">genes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="n">obj</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Object</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">mesh_kwargs</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">mesh_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># override with settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voxel_size</span> <span class="o">=</span> <span class="n">voxel_size</span>
         <span class="k">if</span> <span class="n">obj</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">set_obj</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1231,6 +1471,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">build_physics</span><span class="p">(</span>
                     <span class="n">physics_constructor</span><span class="o">=</span><span class="n">physics_constructor</span><span class="p">,</span>
+                    <span class="n">viscosity</span><span class="o">=</span><span class="n">viscosity</span><span class="p">,</span>
                 <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">growth_enabled</span><span class="p">:</span>
@@ -1242,11 +1483,20 @@
         <span class="k">if</span> <span class="n">genes_enabled</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">build_network</span><span class="p">(</span>
                 <span class="n">circuits</span><span class="o">=</span><span class="n">circuits</span><span class="p">,</span>
-                <span class="n">metabolites</span><span class="o">=</span><span class="n">metabolites</span><span class="p">,</span>
+                <span class="n">genes</span><span class="o">=</span><span class="n">genes</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="o">.</span><span class="n">retrieve_cell</span><span class="p">()</span>
         <span class="n">cell</span><span class="o">.</span><span class="n">celltype</span> <span class="o">=</span> <span class="bp">self</span>
-        <span class="n">cell</span><span class="o">.</span><span class="n">remesh</span><span class="p">()</span>
+        <span class="n">cell</span><span class="o">.</span><span class="n">remesh</span><span class="p">(</span><span class="n">voxel_size</span><span class="o">=</span><span class="n">voxel_size</span><span class="p">)</span>
+
+        <span class="c1"># Apply diffusion system if one exists for this cell type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diffsys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">diffsys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diffsys</span>
+
+        <span class="c1"># Apply any stored molecule-property links to the new cell</span>
+        <span class="k">for</span> <span class="n">molecule</span><span class="p">,</span> <span class="nb">property</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_molecule_property_links</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s1">&#39;diffsys&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cell</span><span class="o">.</span><span class="n">diffsys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">link_molecule_to_property</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cell</span></div>
@@ -1269,6 +1519,27 @@
             <span class="n">incoming_collections</span><span class="p">,</span>
             <span class="n">outgoing_collections</span><span class="p">,</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CellType.link_molecule_to_property">
+<a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.CellType.link_molecule_to_property">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">link_molecule_to_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">:</span> <span class="n">Molecule</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Link molecule to property for all cells of this type.</span>
+
+<span class="sd">        This will set up the link for all existing cells and any new cells created</span>
+<span class="sd">        from this cell type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecule: The molecule to link</span>
+<span class="sd">            property: The property to link the molecule to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Store the link for future cells</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_molecule_property_links</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">molecule</span><span class="p">,</span> <span class="nb">property</span><span class="p">))</span>
+
+        <span class="c1"># Apply the link to all existing cells</span>
+        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cells</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s1">&#39;diffsys&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cell</span><span class="o">.</span><span class="n">diffsys</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">cell</span><span class="o">.</span><span class="n">link_molecule_to_property</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span></div>
 </div>
 
 
@@ -1279,16 +1550,15 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Builders of different cell parts. The CellType class takes these</span>
 <span class="sd">    patterns in order to create new cells.&quot;&quot;&quot;</span>
 
-    <span class="n">mesh_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">physics_constructor</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="n">circuits</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">metabolites</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">initial_pressure</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mesh_kwargs</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">color</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">physics_constructor</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">PhysicsConstructor</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">initial_pressure</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">circuits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">genes</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="CellPattern.reset">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.CellPattern.reset">[docs]</a>
@@ -1299,7 +1569,7 @@
 <div class="viewcode-block" id="CellPattern.retrieve_cell">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.CellPattern.retrieve_cell">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">retrieve_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves constructed cell, links cell to the scene, </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieves constructed cell, links cell to the scene,</span>
 <span class="sd">        and resets the director.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Link cell to scene</span>
@@ -1352,6 +1622,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">build_physics</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">physics_constructor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">viscosity</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="c1"># Add physics modifiers to cell object</span>
         <span class="n">physics_constructor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_override</span><span class="p">(</span>
@@ -1359,6 +1630,9 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">physics_constructor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">physics_constructor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="p">,</span> <span class="s1">&#39;cloth_mod&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="o">.</span><span class="n">point_cache</span><span class="o">.</span><span class="n">frame_end</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">frame_end</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">cloth_mod</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">air_damping</span> <span class="o">=</span> <span class="n">viscosity</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">enable_physics</span><span class="p">()</span></div>
 
 
@@ -1372,13 +1646,17 @@
         <span class="n">hetero_adhesion_strengths</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">CellType</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
         <span class="n">hetero_adhesion_collections</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">CellType</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ForceCollection</span><span class="p">]],</span>
     <span class="p">):</span>
-        <span class="n">homo_adhesion</span> <span class="o">=</span> <span class="n">create_adhesion</span><span class="p">(</span><span class="n">homo_adhesion_strength</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+        <span class="c1"># Use cell&#39;s adhesion strength if set, otherwise use provided homo_adhesion_strength</span>
+        <span class="n">strength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">homo_adhesion_strength</span>
+        <span class="k">if</span> <span class="n">strength</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">strength</span> <span class="o">=</span> <span class="n">homo_adhesion_strength</span>
+        <span class="n">homo_adhesion</span> <span class="o">=</span> <span class="n">create_adhesion</span><span class="p">(</span><span class="n">strength</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
         <span class="n">homo_adhesion_collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">homo_adhesion</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">add_force</span><span class="p">(</span><span class="n">homo_adhesion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">adhesion_force</span> <span class="o">=</span> <span class="n">homo_adhesion</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">add_effector</span><span class="p">(</span><span class="n">homo_adhesion_collection</span><span class="p">)</span>
 
-        <span class="c1"># print(hetero_adhesion_strengths.keys(), hetero_adhesion_collections.keys())</span>
         <span class="k">for</span> <span class="n">celltype</span> <span class="ow">in</span> <span class="n">hetero_adhesion_strengths</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">strength</span> <span class="o">=</span> <span class="n">hetero_adhesion_strengths</span><span class="p">[</span><span class="n">celltype</span><span class="p">]</span>
             <span class="n">incoming</span><span class="p">,</span> <span class="n">outgoing</span> <span class="o">=</span> <span class="n">hetero_adhesion_collections</span><span class="p">[</span><span class="n">celltype</span><span class="p">]</span>
@@ -1422,14 +1700,14 @@
 
 <div class="viewcode-block" id="CellPattern.build_network">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.CellPattern.build_network">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">build_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metabolites</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">circuits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_override</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">circuits</span><span class="p">,</span> <span class="n">circuits</span><span class="p">)</span>
-        <span class="n">metabolites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_override</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">metabolites</span><span class="p">,</span> <span class="n">metabolites</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">genes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">circuits</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">circuits</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">circuits</span><span class="p">)</span>
+        <span class="n">genes</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">genes</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>
 
         <span class="n">grn</span> <span class="o">=</span> <span class="n">GRN</span><span class="p">()</span>
         <span class="n">grn</span><span class="o">.</span><span class="n">load_circuits</span><span class="p">(</span><span class="o">*</span><span class="n">circuits</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">grn</span> <span class="o">=</span> <span class="n">grn</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">metabolites</span> <span class="o">=</span> <span class="n">metabolites</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cell</span><span class="o">.</span><span class="n">genes</span> <span class="o">=</span> <span class="n">genes</span></div>
 </div>
 
 
@@ -1437,15 +1715,15 @@
 <div class="viewcode-block" id="StandardPattern">
 <a class="viewcode-back" href="../../user_guide/goo.cell.html#goo.cell.StandardPattern">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">StandardPattern</span><span class="p">(</span><span class="n">CellPattern</span><span class="p">):</span>
-    <span class="n">mesh_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">physics_constructor</span> <span class="o">=</span> <span class="n">PhysicsConstructor</span><span class="p">(</span>
+    <span class="n">mesh_kwargs</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">physics_constructor</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">PhysicsConstructor</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhysicsConstructor</span><span class="p">(</span>
         <span class="n">SubsurfConstructor</span><span class="p">,</span>
         <span class="n">ClothConstructor</span><span class="p">,</span>
         <span class="n">CollisionConstructor</span><span class="p">,</span>
         <span class="n">RemeshConstructor</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.007</span><span class="p">,</span> <span class="mf">0.021</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">initial_pressure</span> <span class="o">=</span> <span class="mi">12</span></div>
+    <span class="n">color</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.007</span><span class="p">,</span> <span class="mf">0.021</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+    <span class="n">initial_pressure</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">12</span></div>
 
 
 
@@ -1454,12 +1732,12 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">SimplePattern</span><span class="p">(</span><span class="n">CellPattern</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A cell type that is reduced in complexity for faster rendering.&quot;&quot;&quot;</span>
 
-    <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">physics_constructor</span> <span class="o">=</span> <span class="n">PhysicsConstructor</span><span class="p">(</span>
+    <span class="n">mesh_kwargs</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">physics_constructor</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">PhysicsConstructor</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhysicsConstructor</span><span class="p">(</span>
         <span class="n">SimpleClothConstructor</span><span class="p">,</span>
         <span class="n">CollisionConstructor</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span></div>
+    <span class="n">color</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span></div>
 
 
 
@@ -1468,15 +1746,15 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">YolkPattern</span><span class="p">(</span><span class="n">CellPattern</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A larger cell type used for modeling embryonic yolks.&quot;&quot;&quot;</span>
 
-    <span class="n">mesh_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">mesh_kwargs</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
         <span class="s2">&quot;subdivisions&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">physics_constructor</span> <span class="o">=</span> <span class="n">PhysicsConstructor</span><span class="p">(</span>
+    <span class="n">physics_constructor</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">PhysicsConstructor</span><span class="p">]</span> <span class="o">=</span> <span class="n">PhysicsConstructor</span><span class="p">(</span>
         <span class="n">YolkClothConstructor</span><span class="p">,</span>
         <span class="n">CollisionConstructor</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.64</span><span class="p">)</span></div>
+    <span class="n">color</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.64</span><span class="p">,</span> <span class="mf">0.64</span><span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -1490,7 +1768,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2024, Antoine Ruzette, Charles Dai, Sean Megason
+                Copyright &#169; 2024, Antoine Ruzette, Sean Megason
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -1510,7 +1788,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+</div><script src="../../_static/documentation_options.js?v=fb4688e9"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
