@@ -43,16 +43,16 @@ class PIDController(GrowthController):
     def __init__(
         self,
         current_volume,
-        growth_type=GrowthType.LINEAR,
+        growth_type=GrowthType.LOGISTIC,
         growth_rate=1,
-        initial_pressure=0.01,
+        initial_pressure=0.5,
         target_volume=30,
         Kp=0.05,
         Ki=0.00001,
         Kd=0.5,
     ):
         self.growth_type = growth_type
-        self.growth_rate = growth_rate  # in cubic microns per frame
+        self.growth_rate = growth_rate
         self.Kp = Kp
         self.Ki = Ki
         self.Kd = Kd
