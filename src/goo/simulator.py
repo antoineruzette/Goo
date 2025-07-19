@@ -1,6 +1,7 @@
 import os
 import sys
 
+from collections.abc import Callable
 from enum import Enum
 
 import bpy
@@ -86,6 +87,7 @@ class Simulator:
         bpy.context.scene.unit_settings.mass_unit = "MILLIGRAMS"
         bpy.context.scene.unit_settings.time_unit = "SECONDS"
         bpy.context.scene.unit_settings.temperature_unit = "CELSIUS"
+        bpy.context.scene.render.fps = 10
 
         # Turn off gravity
         self.toggle_gravity(False)
@@ -139,7 +141,7 @@ class Simulator:
         """Toggle gravity in the scene."""
         bpy.context.scene.use_gravity = on
 
-    def get_cells_func(self, celltypes=None):
+    def get_cells_func(self, celltypes=None) -> Callable[[], list[Cell]]:
         """Get a function that returns all cells in the simulation."""
         celltypes = celltypes if celltypes else self.celltypes
 
@@ -148,11 +150,11 @@ class Simulator:
 
         return get_cells
 
-    def get_diffsystem_func(self, diffsystem=None):
+    def get_diffsystem_func(self, diffsystem=None) -> Callable[[], DiffusionSystem]:
         """Get a function that returns the diffusion system."""
         diffsystem = diffsystem if diffsystem is not None else self.diffsystem
 
-        def get_diffsystem():
+        def get_diffsystem() -> DiffusionSystem:
             return diffsystem
 
         return get_diffsystem
@@ -187,18 +189,27 @@ class Simulator:
 
     def add_handlers(self, handlers: list[Handler]):
         """Add multiple handlers to the simulation."""
-        # always include a stop handler
+        # Add stability handler first so it runs before other handlers
+        # stability_handler = StabilityHandler()
+        # stability_handler.setup(
+        #     self.get_cells_func(),
+        #     self.get_diffsystem_func(),
+        #     self.physics_dt,
+        # )
+        # bpy.app.handlers.frame_change_pre.append(stability_handler.run)
+
+        # Add all other handlers
+        for handler in handlers:
+            self.add_handler(handler)
+
+        # Add stop handler last so it runs after other handlers
         stop_handler = StopHandler(max_cells=self.max_cells)
-        # Initialize the stop handler with the same parameters as other handlers
         stop_handler.setup(
             self.get_cells_func(),
             self.get_diffsystem_func(),
             self.physics_dt,
         )
         bpy.app.handlers.frame_change_pre.append(stop_handler.run)
-
-        for handler in handlers:
-            self.add_handler(handler)
 
     def render(
         self,
@@ -207,52 +218,65 @@ class Simulator:
         camera=False,
         format: Render = Render.PNG,
     ):
-        """
-        Render the simulation in the background without
-        updating the 3D Viewport in real time.
-        If a camera is specified, the frames will be rendered with it,
-        otherwise the frames will be rendered in the 3D Viewport.
-        It will updated the scene at the end of the simulation.
+        """Render specific frames of the simulation.
 
         Args:
-            start (int): Start frame.
-            end (int): End frame.
-            path (str): Path to save the frames.
-            camera (bool): Render with the camera.
-            format (Render): Render format: PNG (default), TIFF, MP4.
+            frames (list[int] | range | None): List of frames to render. If None, renders all frames.
+            path (str | None): Path to save rendered frames. If None, uses default path.
+            camera (bool): Whether to use camera view (True) or viewport (False).
+            format (Render): Format to save rendered frames in.
+
+        Returns:
+            bool: True if rendering completed normally, False if it was stopped due to instability
         """
         if not path:
-            path = os.path.dirname(bpy.context.scene.render.filepath)
-        else:
             print("Save path not provided. Falling back on default path.")
+            path = os.path.dirname(bpy.context.scene.render.filepath)
+
+        if not frames:
+            frame_list = range(1, bpy.context.scene.frame_end + 1)
+        elif isinstance(frames, range):
+            frame_list = frames
+        else:
+            frame_list = sorted(frames)
+
+        if format == Render.PNG:
+            bpy.context.scene.render.image_settings.file_format = "PNG"
+        elif format == Render.TIFF:
+            bpy.context.scene.render.image_settings.file_format = "TIFF"
+        elif format == Render.MP4:
+            bpy.context.scene.render.image_settings.file_format = "FFMPEG"
+            bpy.context.scene.render.ffmpeg.format = "MPEG4"
 
         print("----- RENDERING... -----")
-
-        render_format = format if format else self.render_format
-        match render_format:
-            case Render.PNG:
-                bpy.context.scene.render.image_settings.file_format = "PNG"
-            case Render.TIFF:
-                bpy.context.scene.render.image_settings.file_format = "TIFF"
-            case Render.MP4:
-                bpy.context.scene.render.image_settings.file_format = "FFMPEG"
-                bpy.context.scene.render.ffmpeg.format = "MPEG4"
-
-        match frames:
-            case None:
-                start = 1
-                end = self.time
-                frame_list = list(range(start, end + 1))
-            case range():
-                frame_list = list(frames)
-            case list():
-                frame_list = frames
+        print("Rendering to", path)
 
         for i in range(1, max(frame_list) + 1):
             print(i, end=" ")
             bpy.context.scene.frame_set(i)
-            bpy.context.scene.render.filepath = os.path.join(path, f"{i:04d}")
+
+            # Run pre-frame handlers and check for stop conditions
+            for handler in bpy.app.handlers.frame_change_pre:
+                try:
+                    if callable(handler):  # Check if it's callable
+                        result = handler(bpy.context.scene, bpy.context.evaluated_depsgraph_get())
+                        if isinstance(result, bool) and not result:
+                            print("\n----- RENDERING STOPPED DUE TO INSTABILITY -----")
+                            return False
+                except Exception as e:
+                    print(f"\nWarning: Handler {handler} failed: {e}")
+
+            # Run post-frame handlers
+            for handler in bpy.app.handlers.frame_change_post:
+                try:
+                    if callable(handler):  # Check if it's callable
+                        handler(bpy.context.scene, bpy.context.evaluated_depsgraph_get())
+                except Exception as e:
+                    print(f"\nWarning: Handler {handler} failed: {e}")
+
+            # Only render if this frame is in our frame list
             if i in frame_list:
+                bpy.context.scene.render.filepath = os.path.join(path, f"{i:04d}")
                 if camera:
                     bpy.ops.render.render(write_still=True)
                 else:
@@ -260,6 +284,7 @@ class Simulator:
 
         bpy.context.scene.render.filepath = path
         print("\n----- RENDERING COMPLETED! -----")
+        return True
 
     def render_animation(self, path=None, end=bpy.context.scene.frame_end, camera=False):
         """Render the simulation as an animation."""
@@ -290,9 +315,37 @@ class Simulator:
 
         Args:
             end (int): End frame. Defaults to the last frame of the scene.
+
+        Returns:
+            bool: True if simulation completed normally, False if it was stopped due to instability
         """
         print("----- SIMULATION START -----")
         for i in range(1, end + 1):
             print(i, end=" ")
             bpy.context.scene.frame_set(i)
+
+            # Run pre-frame handlers and check for stop conditions
+            for handler in bpy.app.handlers.frame_change_pre:
+                try:
+                    if callable(handler):  # Check if it's callable
+                        result = handler(bpy.context.scene, bpy.context.evaluated_depsgraph_get())
+                        if isinstance(result, bool) and not result:
+                            print("\n----- SIMULATION STOPPED DUE TO INSTABILITY -----")
+                            return False
+                except Exception as e:
+                    print(f"\nWarning: Handler {handler} failed: {e}")
+
+            # Run post-frame handlers
+            for handler in bpy.app.handlers.frame_change_post:
+                try:
+                    if callable(handler):  # Check if it's callable
+                        handler(bpy.context.scene, bpy.context.evaluated_depsgraph_get())
+                except Exception as e:
+                    print(f"\nWarning: Handler {handler} failed: {e}")
+
         print("\n----- SIMULATION END -----")
+
+        # Set frame back to 1 and stop animation
+        bpy.context.scene.frame_set(1)
+        bpy.ops.screen.animation_cancel()
+        return True

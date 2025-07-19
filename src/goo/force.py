@@ -1,5 +1,6 @@
 from typing import Union
 
+import bmesh
 import bpy
 
 from mathutils import Vector
@@ -79,7 +80,7 @@ class Force(BlenderObject):
             self.obj.field.distance_min = min_dist
 
     @property
-    def max_dist(self) -> float:
+    def max_dist(self) -> float | None:
         """Maximum distance an object can be from a force to be affected."""
         if self.obj.field.use_max_distance:
             return self.obj.field.max_dist
@@ -94,12 +95,12 @@ class Force(BlenderObject):
             self.obj.field.distance_max = max_dist
 
     @property
-    def shape(self) -> int:
+    def shape(self) -> str:
         """Shape of the force field."""
         return self.obj.field.shape
 
     @shape.setter
-    def shape(self, shape: int):
+    def shape(self, shape: str):
         self.obj.field.shape = shape
 
     @property
@@ -149,7 +150,6 @@ class MotionForce(Force):
     def strength(self, strength):
         self.obj.field.strength = -strength
 
-    # TODO: split into just change location and set rotation. "point_towards"
     def point_towards(self, loc: Vector):
         """Set location of a motion force, towards which a cell will move.
 
@@ -159,47 +159,6 @@ class MotionForce(Force):
         """
         dir = loc - self.loc
         self.obj.rotation_euler = dir.to_track_quat("Z", "X").to_euler()
-
-
-# TODO: remove because not used
-def create_force(
-    name: str,
-    loc: tuple,
-    strength: int,
-    type: str = "FORCE",
-    falloff: float = 0,
-    min_dist: float | None = None,
-    max_dist: float | None = None,
-    shape: str = "POINT",
-) -> Force:
-    """Creates a new force field.
-
-    Args:
-        name: The name of the force field object.
-        loc: The location of the force field object.
-        strength: The strength of the force field.
-        type: The type of the force field.
-        falloff: The falloff power of the force field.
-        min_dist: The minimum distance for the force field.
-        max_dist: The maximum distance for the force field.
-        shape: The shape of the force field. Defaults to "POINT".
-
-    Returns:
-        Force: The created force field object.
-    """
-    obj = bpy.data.objects.new(name, None)
-    obj.location = loc
-    force = Force(obj, type)
-
-    force.strength = strength
-    force.falloff = falloff
-    force.min_dist = min_dist
-    force.max_dist = max_dist
-    force.shape = shape
-
-    ForceCollection.global_forces().add(force)
-    return force
-
 
 def create_adhesion(
     strength: int,
@@ -334,9 +293,38 @@ class ForceCollection:
 class Boundary(BlenderObject):
     """A boundary for cells."""
 
+    def __init__(self, obj):
+        super().__init__(obj)
+        self.volume_history = []
+
     def setup_physics(self):
         """Set up physics for the boundary."""
         BoundaryCollisionConstructor().construct(self.obj)
+
+    def update_volume(self) -> float:
+        """Update the volume of the boundary."""
+        bm = bmesh.new()
+        bm.from_mesh(self.obj.data)
+        bm.transform(self.obj.matrix_world)
+        volume = bm.calc_volume()
+        bm.free()
+        self.volume_history.append(volume)
+        return volume
+
+    def remesh(self, voxel_size: float = 0.7, smooth: bool = True) -> None:
+        """Remesh the boundary mesh.
+
+        Args:
+            voxel_size: The resolution used for the remesher (smaller means more polygons).
+            smooth: If true, the final faces will appear smooth.
+        """
+        self.obj.data.remesh_mode = "VOXEL"
+        self.obj.data.remesh_voxel_size = voxel_size
+        with bpy.context.temp_override(active_object=self.obj, object=self.obj):
+            bpy.ops.object.voxel_remesh()
+
+        for f in self.obj.data.polygons:
+            f.use_smooth = smooth
 
 
 def create_boundary(loc: tuple, size: float, mesh: str = "icosphere"):
@@ -345,7 +333,7 @@ def create_boundary(loc: tuple, size: float, mesh: str = "icosphere"):
     Args:
         loc: Center of the boundary.
         size: Radius of the boundary.
-        mesh: Shape fo the boundary.
+        mesh: Shape of the boundary.
     """
 
     obj = create_mesh("Boundary", loc, mesh=mesh, size=size)

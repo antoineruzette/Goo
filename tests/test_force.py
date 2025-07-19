@@ -5,7 +5,6 @@ from goo.force import (
     Force,
     AdhesionForce,
     MotionForce,
-    create_force,
     create_adhesion,
     ForceCollection,
 )

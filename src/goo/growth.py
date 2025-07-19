@@ -43,16 +43,16 @@ class PIDController(GrowthController):
     def __init__(
         self,
         current_volume,
-        growth_type=GrowthType.LINEAR,
+        growth_type=GrowthType.LOGISTIC,
         growth_rate=1,
-        initial_pressure=0.01,
+        initial_pressure=0.5,
         target_volume=30,
         Kp=0.05,
         Ki=0.00001,
         Kd=0.5,
     ):
         self.growth_type = growth_type
-        self.growth_rate = growth_rate  # in cubic microns per frame
+        self.growth_rate = growth_rate
         self.Kp = Kp
         self.Ki = Ki
         self.Kd = Kd
@@ -105,14 +105,12 @@ class PIDController(GrowthController):
         integral = self.integral + error
         derivative = error - self.previous_error
         pid = self.Kp * error + self.Ki * integral + self.Kd * derivative
-
         next_pressure = self.previous_pressure + pid * self.PID_scale
 
         # Update previous error and pressure for the next iteration
         self.previous_error = error
         self.integral = integral
         self.previous_pressure = next_pressure
-
         return next_pressure
 
     def step_divided(self, new_volume):

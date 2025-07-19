@@ -44,6 +44,7 @@ class BisectDivisionLogic(DivisionLogic):
 
     Attributes:
         margin (float): Distance of margin between divided cells.
+        to_flush (list[tuple[bmesh.types.BMesh, Cell]]): List of bmesh objects and cells to flush.
     """
 
     def __init__(self, margin=0.025):
@@ -51,7 +52,7 @@ class BisectDivisionLogic(DivisionLogic):
         self.to_flush = []
 
     @override
-    def make_divide(self, mother):
+    def make_divide(self, mother: Cell) -> tuple[Cell, Cell]:
         com = mother.COM(local_coords=True)
         axis = mother.major_axis().axis(local_coords=True)
         base_name = mother.name
@@ -76,7 +77,7 @@ class BisectDivisionLogic(DivisionLogic):
         axis: Axis,
         inner: bool,
         margin: float,
-    ):
+    ) -> bmesh.types.BMesh:
         """Bisect a mesh along a plane defined by center of mass and axis.
 
         Args:
@@ -113,6 +114,7 @@ class BisectDivisionLogic(DivisionLogic):
 
     @override
     def flush(self):
+        """Flush the bmesh objects and cells from the division logic."""
         for bm, cell in self.to_flush:
             bm.to_mesh(cell.obj.data)
             bm.free()
@@ -123,14 +125,18 @@ class BisectDivisionLogic(DivisionLogic):
 
 class BooleanDivisionLogic(DivisionLogic):
     """Division logic that creates a plane of division and applies the Boolean
-    modifier to create a division."""
+    modifier to create a division.
 
-    # TODO: Update to work with physics.
+    Boolean division is depreciated and will be removed in the future. The reason behind this is that
+    it is not possible to apply the Boolean modifier to a cell with physics enabled; therefore leads
+    to instability and simulation failure.
+    """
+
     def __init__(self):
         pass
 
     @override
-    def make_divide(self, mother: Cell):
+    def make_divide(self, mother: Cell) -> tuple[Cell, Cell]:
 
         plane = self._create_division_plane(
             mother.name, mother.major_axis(), mother.COM()
@@ -174,7 +180,7 @@ class BooleanDivisionLogic(DivisionLogic):
     def flush(self):
         pass
 
-    def _create_division_plane(self, name, major_axis, com, collection=None):
+    def _create_division_plane(self, name: str, major_axis: Axis, com: Vector) -> bpy.types.Object:
         """
         Creates a plane orthogonal to the long axis vector
         and passing through the cell's center of mass.
@@ -208,12 +214,14 @@ class DivisionHandler(Handler):
     Attributes:
         division_logic (DivisionLogic): The division logic used to execute cell
             division.
+        mu (float): Mean metric for determining cell division.
+        sigma (float): Standard deviation of the metric for determining cell division.
     """
 
-    def __init__(self, division_logic, mu, sigma):
-        self.division_logic = division_logic()
-        self.mu = mu
-        self.sigma = sigma
+    def __init__(self, division_logic: DivisionLogic, mu: float, sigma: float):
+        self.division_logic: DivisionLogic = division_logic()
+        self.mu: float = mu
+        self.sigma: float = sigma
 
     @override
     def setup(
@@ -221,7 +229,7 @@ class DivisionHandler(Handler):
         get_cells: Callable[[], list[Cell]],
         get_diffsystems: Callable[[], list[DiffusionSystem]],
         dt: float,
-    ):
+    ) -> None:
         super().setup(get_cells, get_diffsystems, dt)
         for cell in self.get_cells():
             cell["divided"] = False
@@ -284,17 +292,17 @@ class TimeDivisionHandler(DivisionHandler):
         var (float): Variance in the time interval.
     """
 
-    def __init__(self, division_logic, mu=20, sigma=0):
+    def __init__(self, division_logic: DivisionLogic, mu: float = 20, sigma: float = 0):
         super().__init__(division_logic, mu, sigma)
 
     @override
-    def setup(self, get_cells, get_diffsystem, dt):
+    def setup(self, get_cells: Callable[[], list[Cell]], get_diffsystem: Callable[[], DiffusionSystem], dt: float) -> None:
         super().setup(get_cells, get_diffsystem, dt)
         for cell in self.get_cells():
             cell["last_division_time"] = 0
 
     @override
-    def can_divide(self, cell: Cell):
+    def can_divide(self, cell: Cell) -> bool:
         time = bpy.context.scene.frame_current * self.dt
         if "last_division_time" not in cell:
             cell["last_division_time"] = time
@@ -304,7 +312,7 @@ class TimeDivisionHandler(DivisionHandler):
         return time - cell["last_division_time"] >= div_time
 
     @override
-    def update_on_divide(self, cell: Cell):
+    def update_on_divide(self, cell: Cell) -> None:
         time = bpy.context.scene.frame_current * self.dt
         cell["last_division_time"] = time
 
@@ -316,21 +324,32 @@ class SizeDivisionHandler(DivisionHandler):
     Attributes:
         division_logic (DivisionLogic): see base class.
         threshold (float): minimum size of cell able to divide.
+        one_division_only (bool): if True, cells will only divide once and never again.
     """
 
-    def __init__(self, division_logic, mu=30, sigma=0):
+    def __init__(self, division_logic: DivisionLogic, mu: float = 50, sigma: float = 0, one_division_only: bool = False):
         super().__init__(division_logic, mu, sigma)
+        self.one_division_only = one_division_only
 
     @override
-    def can_divide(self, cell: Cell):
-        # time = bpy.context.scene.frame_current * self.dt
-        # if "last_division_time" not in cell:
-        #     cell["last_division_time"] = time
+    def setup(self, get_cells: Callable[[], list[Cell]], get_diffsystem: Callable[[], DiffusionSystem], dt: float) -> None:
+        super().setup(get_cells, get_diffsystem, dt)
+        # Initialize has_divided property for all cells
+        for cell in self.get_cells():
+            if "has_divided" not in cell:
+                cell["has_divided"] = False
+
+    @override
+    def can_divide(self, cell: Cell) -> bool:
+        # If one_division_only is True and cell has already divided, prevent further division
+        if self.one_division_only and "has_divided" in cell and cell["has_divided"]:
+            return False
 
         div_volume = np.random.normal(self.mu, self.sigma)
         return cell.volume() >= div_volume
 
     @override
-    def update_on_divide(self, cell: Cell):
+    def update_on_divide(self, cell: Cell) -> None:
         time = bpy.context.scene.frame_current * self.dt
         cell["last_division_time"] = time
+        cell["has_divided"] = True
