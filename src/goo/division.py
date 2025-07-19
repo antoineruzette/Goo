@@ -317,13 +317,27 @@ class SizeDivisionHandler(DivisionHandler):
     Attributes:
         division_logic (DivisionLogic): see base class.
         threshold (float): minimum size of cell able to divide.
+        one_division_only (bool): if True, cells will only divide once and never again.
     """
 
-    def __init__(self, division_logic, mu=30, sigma=0):
+    def __init__(self, division_logic, mu=50, sigma=0, one_division_only=False):
         super().__init__(division_logic, mu, sigma)
+        self.one_division_only = one_division_only
+
+    @override
+    def setup(self, get_cells, get_diffsystem, dt):
+        super().setup(get_cells, get_diffsystem, dt)
+        # Initialize has_divided property for all cells
+        for cell in self.get_cells():
+            if "has_divided" not in cell:
+                cell["has_divided"] = False
 
     @override
     def can_divide(self, cell: Cell):
+        # If one_division_only is True and cell has already divided, prevent further division
+        if self.one_division_only and "has_divided" in cell and cell["has_divided"]:
+            return False
+
         div_volume = np.random.normal(self.mu, self.sigma)
         return cell.volume() >= div_volume
 
@@ -331,3 +345,4 @@ class SizeDivisionHandler(DivisionHandler):
     def update_on_divide(self, cell: Cell):
         time = bpy.context.scene.frame_current * self.dt
         cell["last_division_time"] = time
+        cell["has_divided"] = True
